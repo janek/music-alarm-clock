@@ -1,0 +1,30 @@
+#--------------------------------------------------
+# example unix/linux crontab file format:
+#--------------------------------------------------
+# min,hour,dayOfMonth,month,dayOfWeek command
+#
+# field          allowed values
+# -----          --------------
+# minute         0-59
+# hour           0-23
+# day of month   1-31
+# month          1-12 (or names, see below)
+# day of week    0-7 (0 or 7 is Sun, or use names)
+#
+#--------------------------------------------------
+
+# re-generate the blog "categories" list (four times a day)
+5 0,4,10,16 * * * /var/www/devdaily.com/bin/create-cat-list.sh
+
+# reset the contact form just after midnight
+5 0 * * * /var/www/devdaily.com/bin/resetContactForm.sh
+
+# rotate the ad banners every five minutes
+
+0,20,40  * * * * /var/www/bin/ads/freshMint.sh
+5,25,45  * * * * /var/www/bin/ads/greenTaffy.sh
+10,30,50 * * * * /var/www/bin/ads/raspberry.sh
+15,35,55 * * * * /var/www/bin/ads/robinsEgg.sh
+
+
+10 15 * * * curl 0.0.0.0:5000/spotiplay#SPOTI-ALARM

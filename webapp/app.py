@@ -68,8 +68,21 @@ def spotiplay():
     
     return "BABY PLEASE DON'T GO"  
 
+@app.route('/cronsave', methods = ['POST'])
+def cronsave():
+    alarm_adnotation = "#SPOTI-ALARM"
+    cron_job = "curl 0.0.0.0:5000/spotiplay"
+    mm_H = request.json['time']
 
-
+    with open("fakecron","r+") as f:
+        new_f = f.readlines()
+        f.seek(0)
+        for line in new_f:
+            if alarm_adnotation not in line:
+                f.write(line)
+        f.write(mm_H + " * * * " + cron_job + alarm_adnotation)
+        f.truncate()
+    return "Hopefully scheduled"
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
