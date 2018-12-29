@@ -1,11 +1,8 @@
 import json
-from flask import Flask, request, redirect, g, render_template
+from flask import Flask, request
 import requests
-from urllib.parse import quote
 import base64
-
-# Authentication Steps, paramaters, and responses are defined at https://developer.spotify.com/web-api/authorization-guide/
-# Visit this url to see all the steps, parameters, and expected response.
+from crontab import CronTab
 
 
 app = Flask(__name__)
@@ -25,6 +22,7 @@ SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
 # Server-side parameters
 CLIENT_SIDE_URL = "http://127.0.0.1"
 PORT = 8080
+SYSTEM_USER = "janek" # pi
 
 REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
 
@@ -64,25 +62,26 @@ def spotiplay():
 
     headers = {'Authorization': 'Bearer {}'.format(access_token)}
     data = '{"context_uri":"spotify:album:5uiLjgmdPV4dgamvmC64Oq","offset":{"position":5},"position_ms":0}'
-    response = requests.put('https://api.spotify.com/v1/me/player/play', headers=headers, data=data)
+    url_params = {"device_id":"98bb0735e28656bac098d927d410c3138a4b5bca"}
+    response = requests.put('https://api.spotify.com/v1/me/player/play', headers=headers, data=data, params=url_params)
     
-    return "BABY PLEASE DON'T GO"  
+    return "BABY PLEASE DON'T GO" + response.text  
 
 @app.route('/cronsave', methods = ['POST'])
 def cronsave():
-    alarm_adnotation = "#SPOTI-ALARM"
-    cron_job = "curl 0.0.0.0:5000/spotiplay"
-    mm_H = request.json['time']
+    alarm_adnotation_for_crontab = "SPOTI-ALARM"
+    command = "curl 0.0.0.0:5000/spotiplay"
+    minutes = request.json['minutes']
+    hours = request.json['hours']
+    cron_raspi = CronTab(user=SYSTEM_USER)
+    cron_raspi.remove_all(comment=alarm_adnotation_for_crontab)
+    job = cron_raspi.new(command=command, comment=alarm_adnotation_for_crontab)
+    job.minute.on(minutes)
+    job.hour.on(hours)
+    cron_raspi.write()
+    return "OK"
 
-    with open("fakecron","r+") as f:
-        new_f = f.readlines()
-        f.seek(0)
-        for line in new_f:
-            if alarm_adnotation not in line:
-                f.write(line)
-        f.write(mm_H + " * * * " + cron_job + alarm_adnotation)
-        f.truncate()
-    return "Hopefully scheduled"
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
