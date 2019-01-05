@@ -22,8 +22,7 @@ SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
 # Server-side parameters
 CLIENT_SIDE_URL = "http://127.0.0.1"
 PORT = 8080
-SYSTEM_USER = "janek" # pi
-
+SYSTEM_USER = "pi" # janek
 REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
 
 
@@ -70,7 +69,7 @@ def spotiplay():
 @app.route('/cronsave', methods = ['POST'])
 def cronsave():
     alarm_adnotation_for_crontab = "SPOTI-ALARM"
-    command = "curl 0.0.0.0:5000/spotiplay"
+    command = "curl 0.0.0.0:5000/spotiauth && curl 0.0.0.0:5000/spotiplay"
     minutes = request.json['minutes']
     hours = request.json['hours']
     cron_raspi = CronTab(user=SYSTEM_USER)
@@ -84,4 +83,4 @@ def cronsave():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, port=3141, host='0.0.0.0')
