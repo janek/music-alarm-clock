@@ -19,15 +19,17 @@ API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
 
-# Server-side parameters
-SYSTEM_USER = "pi" # janek
-REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doPORTMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
-
 
 # App's global variables
+# SYSTEM_USER = "pi" # janek
+SYSTEM_USER = "janek" # pi
+REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doPORTMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
+
 ALARM_ADNOTATION_TAG = "SPOTI-ALARM" # Identifies lines in crontab created by this program (and not other users/programs)
 RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg" 
-
+HOSTNAME = "0.0.0.0"
+PORT = "3141"
+ADDRESS = HOSTNAME + ":" + PORT 
 
 @app.route("/spotiauth")
 def spotiauth():
@@ -72,9 +74,13 @@ def radioplay():
 
 @app.route('/cronsave', methods = ['POST'])
 def cronsave():
-    command = "curl 0.0.0.0:5000/spotiauth && curl 0.0.0.0:5000/spotiplay"
     minutes = request.json['minutes']
     hours = request.json['hours']
+    music_mode = request.json['mode']
+    if music_mode == "luz":
+        command = "curl " + ADDRESS + "/radioplay" 
+    else:
+        command = "curl " + ADDRESS + "/spotiauth && curl " + ADDRESS + "/spotiplay"
     cron_raspi = CronTab(user=SYSTEM_USER)
     cron_raspi.remove_all(comment=ALARM_ADNOTATION_TAG)
     job = cron_raspi.new(command=command, comment=ALARM_ADNOTATION_TAG)
