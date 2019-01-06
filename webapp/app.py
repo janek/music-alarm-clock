@@ -66,7 +66,7 @@ def spotiplay():
 
 @app.route("/radioplay")
 def radioplay():
-    run("omxplayer", RADIO_STREAM_URL)
+    run(["omxplayer", RADIO_STREAM_URL])
     return "LUZ"
 
 
