@@ -1,5 +1,6 @@
 import json
 from flask import Flask, request
+from subprocess import run
 import requests
 import base64
 from crontab import CronTab
@@ -25,6 +26,8 @@ REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doPORTMPdes5YllKJ9Pu0QO2_EojrjfY4EOVP
 
 # App's global variables
 ALARM_ADNOTATION_TAG = "SPOTI-ALARM" # Identifies lines in crontab created by this program (and not other users/programs)
+RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg" 
+
 
 @app.route("/spotiauth")
 def spotiauth():
@@ -61,6 +64,12 @@ def spotiplay():
     
     return "BABY PLEASE DON'T GO" + response.text  
 
+@app.route("/radioplay")
+def radioplay():
+    run("omxplayer", RADIO_STREAM_URL)
+    return "LUZ"
+
+
 @app.route('/cronsave', methods = ['POST'])
 def cronsave():
     command = "curl 0.0.0.0:5000/spotiauth && curl 0.0.0.0:5000/spotiplay"
@@ -81,7 +90,6 @@ def cronclean():
     cron_raspi.write()
     return "CLEANED"
 
-    
 
 if __name__ == '__main__':
     app.run(debug=True, port=3141, host='0.0.0.0')
