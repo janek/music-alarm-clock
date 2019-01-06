@@ -4,7 +4,6 @@ import requests
 import base64
 from crontab import CronTab
 
-
 app = Flask(__name__)
 
 #  Client Keys
@@ -20,15 +19,15 @@ SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
 
 # Server-side parameters
-CLIENT_SIDE_URL = "http://127.0.0.1"
-PORT = 8080
 SYSTEM_USER = "pi" # janek
-REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
+REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doPORTMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
 
+
+# App's global variables
+ALARM_ADNOTATION_TAG = "SPOTI-ALARM" # Identifies lines in crontab created by this program (and not other users/programs)
 
 @app.route("/spotiauth")
 def spotiauth():
-    global access_token
     # Ask for a new access token, using the refresh token, CLIENT_ID and CLIENT_SECRET. Save it to a file.
     data = {
         "grant_type": "refresh_token",
@@ -37,14 +36,10 @@ def spotiauth():
 
     auth_str = '{}:{}'.format(CLIENT_ID,CLIENT_SECRET)
     b64_auth_str = base64.urlsafe_b64encode(auth_str.encode()).decode()
-
     headers = {"Authorization": "Basic {}".format(b64_auth_str)} 
-    
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
-
     response_data = json.loads(post_request.text)
-    new_access_token = response_data["access_token"]
-    access_token = new_access_token 
+    access_token = response_data["access_token"]
 
     file = open("access_token.txt","w") 
     file.write(access_token) 
@@ -68,19 +63,25 @@ def spotiplay():
 
 @app.route('/cronsave', methods = ['POST'])
 def cronsave():
-    alarm_adnotation_for_crontab = "SPOTI-ALARM"
     command = "curl 0.0.0.0:5000/spotiauth && curl 0.0.0.0:5000/spotiplay"
     minutes = request.json['minutes']
     hours = request.json['hours']
     cron_raspi = CronTab(user=SYSTEM_USER)
     cron_raspi.remove_all(comment=alarm_adnotation_for_crontab)
-    job = cron_raspi.new(command=command, comment=alarm_adnotation_for_crontab)
+    job = cron_raspi.new(command=command, comment=ALARM_ADNOTATION_TAG)
     job.minute.on(minutes)
     job.hour.on(hours)
     cron_raspi.write()
     return "OK"
 
+@app.route('/cronclean', methods = ['GET'])
+def cronclean():
+    cron_raspi = CronTab(user=SYSTEM_USER)
+    cron_raspi.remove_all(comment=ALARM_ADNOTATION_TAG) 
+    cron_raspi.write()
+    return "CLEANED"
 
+    
 
 if __name__ == '__main__':
     app.run(debug=True, port=3141, host='0.0.0.0')
