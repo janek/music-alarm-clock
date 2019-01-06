@@ -67,7 +67,7 @@ def cronsave():
     minutes = request.json['minutes']
     hours = request.json['hours']
     cron_raspi = CronTab(user=SYSTEM_USER)
-    cron_raspi.remove_all(comment=alarm_adnotation_for_crontab)
+    cron_raspi.remove_all(comment=ALARM_ADNOTATION_TAG)
     job = cron_raspi.new(command=command, comment=ALARM_ADNOTATION_TAG)
     job.minute.on(minutes)
     job.hour.on(hours)
