@@ -21,8 +21,7 @@ SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
 
 
 # App's global variables
-# SYSTEM_USER = "pi" # janek
-SYSTEM_USER = "janek" # pi
+SYSTEM_USER = "pi" # janek
 REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doPORTMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
 
 ALARM_ADNOTATION_TAG = "SPOTI-ALARM" # Identifies lines in crontab created by this program (and not other users/programs)
@@ -96,6 +95,9 @@ def cronclean():
     cron_raspi.write()
     return "CLEANED"
 
+@app.route('/areyourunning', methods = ['GET'])
+def areyourunning():
+    return "YES"
 
 if __name__ == '__main__':
-    app.run(debug=True, port=3141, host='0.0.0.0')
+    app.run(debug=True, port=PORT, host='0.0.0.0')
