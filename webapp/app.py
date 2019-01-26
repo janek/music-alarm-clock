@@ -25,10 +25,10 @@ SYSTEM_USER = "pi" # janek
 REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doPORTMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
 
 ALARM_ADNOTATION_TAG = "SPOTI-ALARM" # Identifies lines in crontab created by this program (and not other users/programs)
-RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg" 
+RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
-PORT = "3141"
-ADDRESS = HOSTNAME + ":" + PORT 
+PORT = 3142
+ADDRESS = HOSTNAME + ":" + str(PORT)
 
 @app.route("/spotiauth")
 def spotiauth():
@@ -40,30 +40,30 @@ def spotiauth():
 
     auth_str = '{}:{}'.format(CLIENT_ID,CLIENT_SECRET)
     b64_auth_str = base64.urlsafe_b64encode(auth_str.encode()).decode()
-    headers = {"Authorization": "Basic {}".format(b64_auth_str)} 
+    headers = {"Authorization": "Basic {}".format(b64_auth_str)}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
     response_data = json.loads(post_request.text)
     access_token = response_data["access_token"]
 
-    file = open("access_token.txt","w") 
-    file.write(access_token) 
-    file.close() 
+    file = open("access_token.txt","w")
+    file.write(access_token)
+    file.close()
 
     return access_token
 
 @app.route("/spotiplay")
 def spotiplay():
-    # Read the currently saved token. Use it to connect to the spotify /me/player/play endpoint and start playing music 
-    file = open("access_token.txt","r") 
-    access_token = file.read() 
-    file.close() 
+    # Read the currently saved token. Use it to connect to the spotify /me/player/play endpoint and start playing music
+    file = open("access_token.txt","r")
+    access_token = file.read()
+    file.close()
 
     headers = {'Authorization': 'Bearer {}'.format(access_token)}
     data = '{"context_uri":"spotify:album:5uiLjgmdPV4dgamvmC64Oq","offset":{"position":5},"position_ms":0}'
     url_params = {"device_id":"98bb0735e28656bac098d927d410c3138a4b5bca"}
     response = requests.put('https://api.spotify.com/v1/me/player/play', headers=headers, data=data, params=url_params)
-    
-    return "BABY PLEASE DON'T GO" + response.text  
+
+    return "BABY PLEASE DON'T GO" + response.text
 
 @app.route("/radioplay")
 def radioplay():
@@ -77,7 +77,7 @@ def cronsave():
     hours = request.json['hours']
     music_mode = request.json['mode']
     if music_mode == "luz":
-        command = "curl " + ADDRESS + "/radioplay" 
+        command = "curl " + ADDRESS + "/radioplay"
     else:
         command = "curl " + ADDRESS + "/spotiauth && curl " + ADDRESS + "/spotiplay"
     cron_raspi = CronTab(user=SYSTEM_USER)
@@ -91,7 +91,7 @@ def cronsave():
 @app.route('/cronclean', methods = ['GET'])
 def cronclean():
     cron_raspi = CronTab(user=SYSTEM_USER)
-    cron_raspi.remove_all(comment=ALARM_ADNOTATION_TAG) 
+    cron_raspi.remove_all(comment=ALARM_ADNOTATION_TAG)
     cron_raspi.write()
     return "CLEANED"
 
