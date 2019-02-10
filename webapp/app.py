@@ -1,6 +1,5 @@
 import json
 from flask import Flask, request
-from subprocess import run
 import requests
 import base64
 from crontab import CronTab
@@ -22,12 +21,12 @@ SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
 
 # App's global variables
 SYSTEM_USER = "pi" # janek
-REF_TOKEN = "AQD3owby0pWQOqv1G2WIXGrDiV-EQ5doPORTMPdes5YllKJ9Pu0QO2_EojrjfY4EOVPEN9YAH7Ln82_8bGj9gy8xDapcCRNy5U7qlNmzFwsU3wNdps69HF-VgPOre5EBdaSxBCOzWA"
+REF_TOKEN = "AQA6pV8EScmvV95sA9apooltsAfKdhsfw5IDE5L4XFLf8Qd_3M5JwRc42Ab3mfTPmNaHW--9IGffEbb_NXPS1Mvoi6zYD2E_YBseTtGYZ20cxZtCN1wApEiAFsxTDaE1cOyO4A"
 
 ALARM_ADNOTATION_TAG = "SPOTI-ALARM" # Identifies lines in crontab created by this program (and not other users/programs)
 RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
-PORT = 3142
+PORT = 3141
 ADDRESS = HOSTNAME + ":" + str(PORT)
 
 @app.route("/spotiauth")
@@ -60,7 +59,7 @@ def spotiplay():
 
     headers = {'Authorization': 'Bearer {}'.format(access_token)}
     data = '{"context_uri":"spotify:album:5uiLjgmdPV4dgamvmC64Oq","offset":{"position":5},"position_ms":0}'
-    url_params = {"device_id":"98bb0735e28656bac098d927d410c3138a4b5bca"}
+    url_params = {"device_id":"638c4613fba4557276772c486cba9acc0775f49e"}
     response = requests.put('https://api.spotify.com/v1/me/player/play', headers=headers, data=data, params=url_params)
 
     return "BABY PLEASE DON'T GO" + response.text
