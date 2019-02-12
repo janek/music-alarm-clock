@@ -7,8 +7,8 @@ from crontab import CronTab
 app = Flask(__name__)
 
 #  Client Keys
-CLIENT_ID = "7e1cc7ca19974c4ba5e904e5c20784ac"
-CLIENT_SECRET = "7205a4e9e27f49b1b689e532a1bb5801"
+CLIENT_ID = "your_spotify_app_client_id"
+CLIENT_SECRET = "your_spotify_app_client_secret"
 
 # Spotify URLS
 SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -21,8 +21,7 @@ SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
 
 # App's global variables
 SYSTEM_USER = "pi" # janek
-REF_TOKEN = "AQA6pV8EScmvV95sA9apooltsAfKdhsfw5IDE5L4XFLf8Qd_3M5JwRc42Ab3mfTPmNaHW--9IGffEbb_NXPS1Mvoi6zYD2E_YBseTtGYZ20cxZtCN1wApEiAFsxTDaE1cOyO4A"
-
+REF_TOKEN = "your_refresh_token_that_your_get_from_spoti_after_using_one_of_their_auth_workflows"
 ALARM_ADNOTATION_TAG = "SPOTI-ALARM" # Identifies lines in crontab created by this program (and not other users/programs)
 RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
