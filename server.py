@@ -24,7 +24,7 @@ SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
 # App's global variables
 SYSTEM_USER = "pi" # janek
 PI_DEVICE_ID = "638c4613fba455726772c486cba9acc0775f49e"
-REF_TOKEN = "AQC3-yi9SWBAyja3DmcRDJHoV1oz-jK-aFlPo-OqtjCDHUZQExt153nwidgbKMOt-GTAGxJJqo-pwvSFXn5Rag_ZArY5HX4uB0DfNdZVE-LuHsTecLIqr-iEbn3u8bmuSPpnZA"
+REF_TOKEN = "your_refresh_token_that_your_get_from_spoti_after_using_one_of_their_auth_workflows"
 ALARM_ADNOTATION_TAG = "SPOTI-ALARM" # Identifies lines in crontab created by this program (and not other users/programs)
 RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
