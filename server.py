@@ -9,7 +9,7 @@ from playlists import playlists
 
 app = Flask(__name__)
 
-#  Client Keys
+# Client Keys
 CLIENT_ID = "7e1cc7ca19974c4ba5e904e5c20784ac"
 CLIENT_SECRET = "7205a4e9e27f49b1b689e532a1bb5801"
 
@@ -98,7 +98,7 @@ def spotify_request(endpoint, data=None, force_device=False, token=None, url_par
     if token == None:
         token = access_token_from_file()
     if force_device:
-        url_params["device_id"] = "" #TODO: device id
+        url_params["device_id"] = PI_DEVICE_ID
     url = SPOTIFY_PLAYER_URL + "/" + endpoint
     headers = {'Authorization': 'Bearer {}'.format(token)} 
     response = requests.put(url, data=data, headers=headers, params=url_params)
