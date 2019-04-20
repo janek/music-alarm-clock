@@ -1,10 +1,11 @@
 import json
-from flask import Flask, request
+from flask import Flask, request, g
 import requests
 from subprocess import run
 import base64
 from crontab import CronTab
 from playlists import playlists
+
 
 app = Flask(__name__)
 
@@ -18,10 +19,9 @@ SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 SPOTIFY_API_BASE_URL = "https://api.spotify.com"
 API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
-SPOTIFY_PLAY_URL = SPOTIFY_API_BASE_URL+"/me/player/play"
+SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 
-
-# App's global variables
+# App's global constants
 SYSTEM_USER = "pi" # janek
 PI_DEVICE_ID = "638c4613fba455726772c486cba9acc0775f49e"
 REF_TOKEN = "your_refresh_token_that_your_get_from_spoti_after_using_one_of_their_auth_workflows"
@@ -30,6 +30,9 @@ RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
 PORT = 3141
 ADDRESS = HOSTNAME + ":" + str(PORT)
+
+# Global state variables
+currently_playing = False
 
 @app.route("/spotiauth")
 def spotiauth():
@@ -52,37 +55,72 @@ def spotiauth():
 
     return access_token
 
+@app.route("/spotipause")
+def spotipause():
+    pause()
+    return "Attempted pause"
+
 @app.route("/spotiplay")
 def spotiplay():
     response = play(spotify_uri="spotify:album:5uiLjgmdPV4dgamvmC64Oq")
+    return "SPOTIPLAY, RESPONSE: \n" + response.text
 
-    # #TODO:
-    # if response.error != None:
-    #     print("ERROR: " + response.error)
-    #     print("Retrying...") 
-    #     token = spotiauth()
-    #     spotiplay(token)
-    return "SPOTIPLAY, RESPONSE: " + response.text
-
-
-def play(spotify_uri = "spotify:album:5uiLjgmdPV4dgamvmC64Oq", song_number=0, access_token=None): #XXX: naming problem between this and spotiplay
-    if access_token == None:
-        file = open("access_token.txt","r")
-        access_token = file.read()
-        file.close()
-    headers = {'Authorization': 'Bearer {}'.format(access_token)}
-    data = '{"context_uri":"' + spotify_uri + '","offset":{"position":' + str(song_number) + '},"position_ms":0}'
-    url_params = []
-    # url_params = {"device_id":"638c4613fba455726772c486cba9acc0775f49e"}   
-    response = requests.put('https://api.spotify.com/v1/me/player/play', headers=headers, data=data, params=url_params) 
+def play(spotify_uri = None, song_number=0, retries_attempted=0): #XXX: naming problem between this and spotiplay
+    global currently_playing
+    data = ''
+    if spotify_uri != None:
+        data = '{"context_uri":"' + spotify_uri + '","offset":{"position":' + str(song_number) + '},"position_ms":0}'
+    response = spotify_request("play", data=data)
+    if response.status_code == 204:
+        currently_playing = True
     return response
 
+def pause():
+    global currently_playing
+    response = spotify_request("pause")
+    if response.status_code == 204:
+        currently_playing = False
+    return response
+
+def playpause():
+    global currently_playing
+    if currently_playing:
+        pause()
+    else:
+        play()
+
+def set_volume(new_volume):
+    url_params = {"volume_percent":str((new_volume+1)*10)}
+    response = spotify_request("volume", url_params=url_params)
+    return response
+
+def spotify_request(endpoint, data=None, force_device=False, token=None, url_params=[]):
+    if token == None:
+        token = access_token_from_file()
+    if force_device:
+        url_params["device_id"] = "" #TODO: device id
+    url = SPOTIFY_PLAYER_URL + "/" + endpoint
+    headers = {'Authorization': 'Bearer {}'.format(token)} 
+    response = requests.put(url, data=data, headers=headers, params=url_params)
+
+    if response.status_code == 401:
+        #If token is expired, get a new one and retry 
+        token = spotiauth()
+        headers = {'Authorization': 'Bearer {}'.format(token)} 
+        response = request.put(url, data=data, headers=headers, params=url_params)
+
+    return response 
+
+def access_token_from_file():
+    file = open("access_token.txt","r")
+    access_token = file.read()
+    file.close()
+    return access_token
 
 @app.route("/radioplay")
 def radioplay():
     run(["omxplayer", RADIO_STREAM_URL])
     return "LUZ"
-
 
 @app.route('/cronsave', methods = ['POST'])
 def cronsave():
