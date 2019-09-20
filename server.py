@@ -4,14 +4,11 @@ import requests
 from subprocess import run
 import base64
 from crontab import CronTab
+from config_reader import get_spotify_client_id, get_spotify_client_secret
 # from playlists import playlists #TODO
 
 
 app = Flask(__name__)
-
-# Client Keys
-CLIENT_ID = "7e1cc7ca19974c4ba5e904e5c20784ac"
-CLIENT_SECRET = "7205a4e9e27f49b1b689e532a1bb5801"
 
 # Spotify URLS
 SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -44,7 +41,9 @@ def spotiauth():
         "refresh_token": REF_TOKEN
     }
 
-    auth_str = '{}:{}'.format(CLIENT_ID, CLIENT_SECRET)
+    client_id = get_spotify_client_id()
+    client_secret = get_spotify_client_secret()
+    auth_str = '{}:{}'.format(client_secret, client_secret)
     b64_auth_str = base64.urlsafe_b64encode(auth_str.encode()).decode()
     headers = {"Authorization": "Basic {}".format(b64_auth_str)}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
