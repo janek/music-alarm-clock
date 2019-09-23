@@ -4,7 +4,7 @@ import requests
 from subprocess import run
 import base64
 from crontab import CronTab
-from config_reader import get_spotify_client_id, get_spotify_client_secret
+import config_reader as cfg
 # from playlists import playlists #TODO
 
 
@@ -21,7 +21,6 @@ SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 # App's global constants
 SYSTEM_USER = "pi"  # janek
 PI_DEVICE_ID = "638c4613fba455726772c486cba9acc0775f49e"
-REF_TOKEN = "refresh_token__get_from_spoti_using_one_of_their_auth_workflows"
 ALARM_ANNOTATION_TAG = "SPOTI-ALARM"  # Identifies our lines in crontab
 RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
@@ -34,16 +33,16 @@ currently_playing = False
 
 @app.route("/spotiauth")
 def spotiauth():
-    # Ask for a new access token, using the refresh token, 
+    # Ask for a new access token, using the refresh token,
     # CLIENT_ID and CLIENT_SECRET. Save it to a file.
     data = {
         "grant_type": "refresh_token",
-        "refresh_token": REF_TOKEN
+        "refresh_token": cfg.get_spotify_refresh_token()
     }
 
-    client_id = get_spotify_client_id()
-    client_secret = get_spotify_client_secret()
-    auth_str = '{}:{}'.format(client_secret, client_secret)
+    client_id = cfg.get_spotify_client_id()
+    client_secret = cfg.get_spotify_client_secret()
+    auth_str = '{}:{}'.format(client_id, client_secret)
     b64_auth_str = base64.urlsafe_b64encode(auth_str.encode()).decode()
     headers = {"Authorization": "Basic {}".format(b64_auth_str)}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
