@@ -121,7 +121,7 @@ def spotify_request(endpoint, data=None, force_device=False, token=None, url_par
 
 
 def access_token_from_file():
-    file = open("access_token.txt","r")
+    file = open("../access_token.txt","r")
     access_token = file.read()
     file.close()
     return access_token
