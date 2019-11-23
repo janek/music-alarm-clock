@@ -47,8 +47,11 @@ def spotiauth():
     headers = {"Authorization": "Basic {}".format(b64_auth_str)}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
     response_data = json.loads(post_request.text)
-    access_token = response_data["access_token"]
 
+    if 'error' in response_data:
+        raise Exception(response_data['error_description'])
+
+    access_token = response_data["access_token"]
     file = open("access_token.txt", "w")
     file.write(access_token)
     file.close()
