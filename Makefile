@@ -22,3 +22,6 @@ install:
 	systemctl --user daemon-reload
 	# Enable the service to start system boot (I hope)
 	systemctl --user enable spoti
+
+dev:
+	sudo -E ./virtualenv/bin/python keyboard_control.py
