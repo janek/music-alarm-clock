@@ -5,6 +5,8 @@ Description= Spoti server
 Type= simple 
 ExecStart= /usr/bin/python3 server.py
 WorkingDirectory= /home/pi/Developer/spoti-alarm-server
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
