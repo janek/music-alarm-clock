@@ -3,7 +3,7 @@ Description= Spoti server
 
 [Service] 
 Type= simple 
-ExecStart= /usr/bin/python3 server.py
+ExecStart= /home/pi/Developer/spoti-alarm-server/virtualenv/bin/python server.py
 WorkingDirectory= /home/pi/Developer/spoti-alarm-server
 Restart=on-failure
 RestartSec=5

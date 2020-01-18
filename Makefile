@@ -1,5 +1,16 @@
 all:
-	@echo Usage: make install 
+	@echo Usage:
+	@echo make dependencies
+	@echo make install
+	@echo make virtualenv
+
+virtualenv:
+	# NB: If something is not quite right with the virtual environment then
+	# just remove it and create it again with "make virtualenv".
+	virtualenv -p /usr/bin/python3 virtualenv
+
+dependencies: virtualenv
+	./virtualenv/bin/pip install --upgrade -r requirements.txt
 
 install:
 	# Install the systemd service...
