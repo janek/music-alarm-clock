@@ -1,0 +1,7 @@
+# Server
+flask
+requests
+python-crontab
+
+# Keyboard control
+keyboard
