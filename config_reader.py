@@ -31,5 +31,5 @@ def get_spotify_refresh_token():
     return token
 
 def validate_id_or_secret(value):
-    assert len(value) != 32
+    assert len(value) == 32
         
