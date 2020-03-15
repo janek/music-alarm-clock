@@ -20,7 +20,7 @@ SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 
 # App's global constants
 SYSTEM_USER = "pi"  # janek
-PI_DEVICE_ID = "638c4613fba455726772c486cba9acc0775f49e"
+PI_DEVICE_ID = "638c4613fba455726772c486cba9acc0775f49e" # TODO: move to config
 ALARM_ANNOTATION_TAG = "SPOTI-ALARM"  # Identifies our lines in crontab
 RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
@@ -47,14 +47,17 @@ def spotiauth():
     headers = {"Authorization": "Basic {}".format(b64_auth_str)}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
     response_data = json.loads(post_request.text)
-    access_token = response_data["access_token"]
-
-    file = open("access_token.txt", "w")
-    file.write(access_token)
-    file.close()
-
-    return access_token
-
+    
+    if "error" in response_data:
+        return response_data["error"]
+    elif "access_token" in response_data:
+        access_token = response_data["access_token"]
+        file = open("access_token.txt", "w")
+        file.write(access_token)
+        file.close()
+        return access_token
+    else:
+        return "Unknown problem with response to spoti auth"
 
 @app.route("/spotipause")
 def spotipause():
