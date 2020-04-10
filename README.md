@@ -1,7 +1,7 @@
 # spoti-alarm-server
-Raspberry + Spotify alarm clock server
+Takes a time via an API, saves a time to crontab, uses the Spotify API to start playing music at the given time.
 
-Work in progress, README will be updated when the project is share-ready.
+Work in progress, README will be updated
 
 ## Installation
 
