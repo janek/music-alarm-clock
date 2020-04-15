@@ -67,7 +67,7 @@ def spotipause():
 
 @app.route("/spotiplay")
 def spotiplay():
-    response = play(spotify_uri="spotify:album:5uiLjgmdPV4dgamvmC64Oq")
+    response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
     return "SPOTIPLAY, RESPONSE: \n" + response.text
 
 
