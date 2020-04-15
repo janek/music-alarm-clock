@@ -1,8 +1,11 @@
+import os
 from configparser import ConfigParser
 
 
 def read_config_file():
-    config_file_path = "config.ini"
+    path_of_this_dir, _ = os.path.split(os.path.realpath(__file__))
+    config_file_name = "config.ini"
+    config_file_path = os.path.join(path_of_this_dir, config_file_name)
     config_parser = ConfigParser()
     num_read_files = config_parser.read(config_file_path)
     assert len(num_read_files) > 0, f'could not read {config_file_path}'
