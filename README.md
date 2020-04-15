@@ -1,7 +1,7 @@
 # spoti-alarm-server
 Takes a time via an API, saves a time to crontab, uses the Spotify API to start playing music at the given time.
 
-Warning: the README is lacking, WIP
+Warning: WIP: the README is lacking and the setup is not smooth
 
 ## Installation
 
@@ -25,6 +25,5 @@ The server is managed via a systemd service. Here's a quick cheatsheet:
 - `systemctl --user stop spoti` - Stop the service manually.
 
 ## Usage
-
 
 - iOS shortcut: https://www.icloud.com/shortcuts/f5d2caf18278496cb99f1f594c5ae398 (change the hardcoded IP to the IP of your server)
