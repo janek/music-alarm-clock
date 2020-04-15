@@ -17,11 +17,11 @@ install:
 	# Create systemd directories
 	mkdir -p ~/.config/systemd/user
 	# Copy the service file to systemd directories
-	cp spoti.service ~/.config/systemd/user
+	cp spotify-alarm-clock.service ~/.config/systemd/user
 	# Reload the systemd daemon: https://askubuntu.com/a/1143989/413683
 	systemctl --user daemon-reload
 	# Enable the service to start system boot (I hope)
-	systemctl --user enable spoti
+	systemctl --user enable spotify-alarm-clock
 
 dev:
 	sudo -E ./virtualenv/bin/python keyboard_control.py
