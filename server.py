@@ -10,19 +10,20 @@ import config_reader as cfg
 
 app = Flask(__name__)
 
-# Spotify URLS
+# URLs
 SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 SPOTIFY_API_BASE_URL = "https://api.spotify.com"
 API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
+RADIO_LUZ_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 
 # App's global constants
-SYSTEM_USER = "pi"  # janek
-PI_DEVICE_ID = "9c1392a33b05d7d7398fcdf2ffc6cc37d1c271da" # TODO: move to config
-ALARM_ANNOTATION_TAG = "SPOTI-ALARM"  # Identifies our lines in crontab
-RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
+SYSTEM_USER = os.environ.get('USER')
+SPOTIFY_DEVICE_ID =  cfg.get_spotify_client_id()
+ALARM_ANNOTATION_TAG = "SPOTIFY-ALARM"  # Identifies our lines in crontab
+
 HOSTNAME = "0.0.0.0"
 PORT = 3141
 ADDRESS = HOSTNAME + ":" + str(PORT)
@@ -109,7 +110,7 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
     if token is None:
         token = access_token_from_file()
     if force_device:
-        url_params["device_id"] = PI_DEVICE_ID
+        url_params["device_id"] = SPOTIFY_DEVICE_ID
     url = SPOTIFY_PLAYER_URL + "/" + endpoint
     headers = {'Authorization': 'Bearer {}'.format(token)} 
     if http_method == "PUT":
@@ -135,7 +136,7 @@ def access_token_from_file():
 
 @app.route("/radioplay")
 def radioplay():
-    run(["omxplayer", RADIO_STREAM_URL])
+    run(["omxplayer", RADIO_LUZ_STREAM_URL])
     return "LUZ"
 
 
