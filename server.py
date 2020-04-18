@@ -121,7 +121,7 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
         # If token is expired, get a new one and retry
         token = spotiauth()
         headers = {'Authorization': 'Bearer {}'.format(token)}
-        response = request.put(url, data=data, headers=headers, params=url_params)
+        response = requests.put(url, data=data, headers=headers, params=url_params)
 
     return response
 
