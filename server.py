@@ -17,18 +17,18 @@ SPOTIFY_API_BASE_URL = "https://api.spotify.com"
 API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
+
 RADIO_LUZ_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
+
+HOSTNAME = "0.0.0.0"
+PORT = 3141
+THIS_SERVER_ADDRESS = HOSTNAME + ":" + str(PORT)
+
 
 # App's global constants
 SYSTEM_USER = os.environ.get('USER')
 SPOTIFY_DEVICE_ID =  cfg.get_spotify_client_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY-ALARM"  # Identifies our lines in crontab
-
-HOSTNAME = "0.0.0.0"
-PORT = 3141
-ADDRESS = HOSTNAME + ":" + str(PORT)
-
-# Global state variables
 currently_playing = False
 
 
@@ -62,14 +62,14 @@ def spotiauth():
 
 @app.route("/spotipause")
 def spotipause():
-    pause()
-    return "Attempted pause"
+    response = pause()
+    return "Pause request sent to Spotify, response: \n" + response.text
 
 
 @app.route("/spotiplay")
 def spotiplay():
     response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
-    return "SPOTIPLAY, RESPONSE: \n" + response.text
+    return "Play request sent to Spotify, response: \n" + response.text
 
 
 def play(spotify_uri=None, song_number=0, retries_attempted=0): 
@@ -146,9 +146,9 @@ def cronsave():
     hours = request.json['hours']
     music_mode = request.json['mode']
     if music_mode == "luz":
-        command = "curl " + ADDRESS + "/radioplay"
+        command = "curl " + THIS_SERVER_ADDRESS + "/radioplay"
     else:
-        command = "curl " + ADDRESS + "/spotiauth && curl " + ADDRESS + "/spotiplay"
+        command = "curl " + THIS_SERVER_ADDRESS + "/spotiauth && curl " + THIS_SERVER_ADDRESS + "/spotiplay"
     cron_raspi = CronTab(user=SYSTEM_USER)
     cron_raspi.remove_all(comment=ALARM_ANNOTATION_TAG)
     job = cron_raspi.new(command=command, comment=ALARM_ANNOTATION_TAG)
