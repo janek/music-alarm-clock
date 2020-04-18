@@ -154,7 +154,7 @@ def cronsave():
     job.minute.on(minutes)
     job.hour.on(hours)
     cron_raspi.write()
-    return "OK"
+    return "Alarm saved!"
 
 @app.route('/devices', methods=['GET'])
 def devices():
@@ -166,12 +166,12 @@ def cronclean():
     cron_raspi = CronTab(user=SYSTEM_USER)
     cron_raspi.remove_all(comment=ALARM_ANNOTATION_TAG)
     cron_raspi.write()
-    return "CLEANED"
+    return "All alarms cleared."
 
 
 @app.route('/areyourunning', methods=['GET'])
 def areyourunning():
-    return "YES"
+    return "Alarm-clock server is running."
 
 
 if __name__ == '__main__':
