@@ -20,7 +20,7 @@ SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 
 # App's global constants
 SYSTEM_USER = "pi"  # janek
-PI_DEVICE_ID = "638c4613fba455726772c486cba9acc0775f49e" # TODO: move to config
+PI_DEVICE_ID = "9c1392a33b05d7d7398fcdf2ffc6cc37d1c271da" # TODO: move to config
 ALARM_ANNOTATION_TAG = "SPOTI-ALARM"  # Identifies our lines in crontab
 RADIO_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
@@ -77,7 +77,7 @@ def play(spotify_uri=None, song_number=0, retries_attempted=0):
     data = ''
     if spotify_uri != None:
         data = '{"context_uri":"' + spotify_uri + '","offset":{"position":' + str(song_number) + '},"position_ms":0}'
-    response = spotify_request("play", data=data)
+    response = spotify_request("play", force_device=True, data=data)
     if response.status_code == 204:
         currently_playing = True
     return response
@@ -105,7 +105,7 @@ def set_volume(new_volume):
     return response
 
 
-def spotify_request(endpoint, data=None, force_device=False, token=None, url_params=[]):
+def spotify_request(endpoint, data=None, force_device=False, token=None, url_params={}):
     if token is None:
         token = access_token_from_file()
     if force_device:
