@@ -12,6 +12,7 @@ def read_config_file():
     return config_parser
 
 
+# XXX: Is this getting called multiple times? Does it have to be?
 CONFIG = read_config_file()
 
 
@@ -26,7 +27,13 @@ def get_spotify_client_secret():
     validate_id_or_secret(client_secret)
     return client_secret
 
+def get_spotify_playable_uri():
+    spotify_uri = CONFIG["SPOTIFY"]["PLAYABLE_URI"]
+    return spotify_uri
 
+def get_spotify_device_id():
+    device_id = CONFIG["SPOTIFY"]["DEVICE_ID"]
+    return device_id
 
 def get_spotify_refresh_token():
     token = CONFIG["SPOTIFY"]["REFRESH_TOKEN"]

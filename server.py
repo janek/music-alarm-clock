@@ -17,6 +17,7 @@ SPOTIFY_API_BASE_URL = "https://api.spotify.com"
 API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
+SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
 
 RADIO_LUZ_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 
@@ -27,9 +28,14 @@ THIS_SERVER_ADDRESS = HOSTNAME + ":" + str(PORT)
 
 # App's global constants
 SYSTEM_USER = os.environ.get('USER')
-SPOTIFY_DEVICE_ID =  cfg.get_spotify_client_id()
-ALARM_ANNOTATION_TAG = "SPOTIFY-ALARM"  # Identifies our lines in crontab
+SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
+ALARM_ANNOTATION_TAG = cfg.get_spotify_client_secret()  # Identifies our lines in crontab
 currently_playing = False
+
+
+#### TODO:
+#### blaaaaa
+#### make functions in cfg for the new things that are loaded from confgi
 
 
 @app.route("/spotiauth")
