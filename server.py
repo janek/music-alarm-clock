@@ -105,14 +105,17 @@ def set_volume(new_volume):
     return response
 
 
-def spotify_request(endpoint, data=None, force_device=False, token=None, url_params={}):
+def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}):
     if token is None:
         token = access_token_from_file()
     if force_device:
         url_params["device_id"] = PI_DEVICE_ID
     url = SPOTIFY_PLAYER_URL + "/" + endpoint
     headers = {'Authorization': 'Bearer {}'.format(token)} 
-    response = requests.put(url, data=data, headers=headers, params=url_params)
+    if http_method == "PUT":
+        response = requests.put(url, data=data, headers=headers, params=url_params)
+    elif http_method == "GET":
+        response = requests.get(url, data=data, headers=headers, params=url_params)
 
     if response.status_code == 401:
         # If token is expired, get a new one and retry
@@ -153,6 +156,10 @@ def cronsave():
     cron_raspi.write()
     return "OK"
 
+@app.route('/devices', methods=['GET'])
+def devices():
+    response = spotify_request("devices", http_method="GET")
+    return response.text
 
 @app.route('/cronclean', methods=['GET'])
 def cronclean():
