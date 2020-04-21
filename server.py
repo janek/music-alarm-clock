@@ -5,8 +5,8 @@ from subprocess import run
 import base64
 from crontab import CronTab
 import config_reader as cfg
+import os
 # from playlists import playlists #TODO
-
 
 app = Flask(__name__)
 
@@ -31,12 +31,6 @@ SYSTEM_USER = os.environ.get('USER')
 SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = cfg.get_spotify_client_secret()  # Identifies our lines in crontab
 currently_playing = False
-
-
-#### TODO:
-#### blaaaaa
-#### make functions in cfg for the new things that are loaded from confgi
-
 
 @app.route("/spotiauth")
 def spotiauth():
