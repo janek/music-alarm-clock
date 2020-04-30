@@ -29,7 +29,7 @@ THIS_SERVER_ADDRESS = HOSTNAME + ":" + str(PORT)
 # App's global constants
 SYSTEM_USER = os.environ.get('USER')
 SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
-ALARM_ANNOTATION_TAG = cfg.get_spotify_client_secret()  # Identifies our lines in crontab
+ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
 
 @app.route("/spotiauth")
@@ -81,6 +81,9 @@ def play(spotify_uri=None, song_number=0, retries_attempted=0):
     response = spotify_request("play", force_device=True, data=data)
     if response.status_code == 204:
         currently_playing = True
+    if response.status_code == 404:
+        app.logger.info('Device not found, attempting radio')
+        radioplay()
     return response
 
 
@@ -136,7 +139,10 @@ def access_token_from_file():
 
 @app.route("/radioplay")
 def radioplay():
-    run(["omxplayer", RADIO_LUZ_STREAM_URL])
+    # run(["omxplayer", RADIO_LUZ_STREAM_URL])
+    app.logger.info('Starting radio')
+    run(["mpc", "add", RADIO_LUZ_STREAM_URL])
+    run(["mpc", "play"])
     return "LUZ"
 
 
@@ -173,7 +179,6 @@ def cronclean():
 @app.route('/areyourunning', methods=['GET'])
 def areyourunning():
     return "Alarm-clock server is running."
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=PORT, host='0.0.0.0')
