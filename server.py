@@ -1,11 +1,13 @@
 import json
 from flask import Flask, request
 import requests
-from subprocess import run
+import subprocess
+import threading
 import base64
 from crontab import CronTab
 import config_reader as cfg
 import os
+
 # from playlists import playlists #TODO
 
 app = Flask(__name__)
@@ -30,7 +32,9 @@ THIS_SERVER_ADDRESS = HOSTNAME + ":" + str(PORT)
 SYSTEM_USER = os.environ.get('USER')
 SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
+
 currently_playing = False
+last_cover_image_url = ""
 
 @app.route("/spotiauth")
 def spotiauth():
@@ -137,14 +141,39 @@ def access_token_from_file():
     return access_token
 
 
+def refresh_cover_if_needed():
+    # TODO: "inappropriate ioctl for device"
+    # TODO: prevent sleep
+    # TODO: this functionality might be better off in a separate service.
+    # consider the context of "keyboard" too 
+    threading.Timer(5, refresh_cover_if_needed).start() #TODO: adjust time?
+    app.logger.info("Checking cover status and refreshing if needed")
+    global last_cover_image_url
+    response = spotify_request("", http_method="GET")
+    if response.status_code != 200:
+        return response.text
+    img_url = str(json.loads(response.text)['item']['album']['images'][0]['url'])
+    if img_url != last_cover_image_url:
+        last_cover_image_url = img_url
+        page = requests.get(img_url)
+        with open("cover.png", "wb") as f:
+            f.write(page.content)
+            subprocess.run(["fim", "--quiet", "cover.png"])
+    return response.text
+
+@app.route("/cover", methods=['GET'])
+def cover():
+    refresh_cover_if_needed()
+    return "Attempted to refresh cover"
+
+
 @app.route("/radioplay")
 def radioplay():
     # run(["omxplayer", RADIO_LUZ_STREAM_URL])
     app.logger.info('Starting radio')
-    run(["mpc", "add", RADIO_LUZ_STREAM_URL])
-    run(["mpc", "play"])
+    subprocess.run(["mpc", "add", RADIO_LUZ_STREAM_URL])
+    subprocess.run(["mpc", "play"])
     return "LUZ"
-
 
 @app.route('/cronsave', methods=['POST'])
 def cronsave():
@@ -175,10 +204,12 @@ def cronclean():
     cron_raspi.write()
     return "All alarms cleared."
 
-
 @app.route('/areyourunning', methods=['GET'])
 def areyourunning():
     return "Alarm-clock server is running."
 
 if __name__ == '__main__':
     app.run(debug=True, port=PORT, host='0.0.0.0')
+    #TODO: the below doesn't work, refershing covers still needs to be manually 
+    # triggered with curl this/cover
+    threading.Timer(15, refresh_cover_if_needed).start()
