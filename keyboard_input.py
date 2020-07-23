@@ -14,6 +14,7 @@ def on_press(key):
 
 	try:
 		#TODO: how can this form be made clearer? a dictionary with code and action? remember vk vs char
+		print(key.vk)
 		if key.vk == 76:
 			print("got enter")
 			playpause()
