@@ -79,18 +79,24 @@ def play(spotify_uri=None, song_number=0, retries_attempted=0):
     if spotify_uri != None:
         data = '{"context_uri":"' + spotify_uri + '","offset":{"position":' + str(song_number) + '},"position_ms":0}'
     response = spotify_request("play", force_device=True, data=data)
-    if response.status_code == 204:
+    print(response.text)
+    if response.ok:
         currently_playing = True
     if response.status_code == 404:
+        # Hardcoded device not found
         app.logger.info('Device not found, attempting radio')
-        radioplay()
+        try: 
+            radioplay()
+        except:
+            print("Failed to play radio")
+            
     return response
 
 
 def pause():
     global currently_playing
     response = spotify_request("pause")
-    if response.status_code == 204:
+    if response.ok:
         currently_playing = False
     return response
 
@@ -101,6 +107,10 @@ def playpause():
         pause()
     else:
         play()
+        
+def get_devices():
+    response = spotify_request("devices", "GET")
+    return response
 
 
 def set_volume(new_volume):
