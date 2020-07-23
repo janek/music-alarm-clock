@@ -1,5 +1,5 @@
 # spoti-alarm-server
-Takes a time via an API, saves a time to crontab, uses the Spotify API to start playing music at the given time.
+Takes a time via an http request, saves it to crontab, uses the Spotify API to start playing music at the given (saved) time.
 
 Warning: WIP: the README is lacking and the setup is not smooth
 
