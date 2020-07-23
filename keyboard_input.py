@@ -14,7 +14,7 @@ def on_press(key):
 
 	try:
 		#TODO: how can this form be made clearer? a dictionary with code and action? remember vk vs char
-		print(key.vk)
+		print(key.vk, key.char)
 		if key.vk == 76:
 			print("got enter")
 			playpause()
@@ -38,8 +38,6 @@ def on_press(key):
 				print("play num " + key.char)
 				play(spotify_uri=playlists[key.char])
 		
-            
-
 	except AttributeError:
 		# Happens when key.vk or key.char is empty, i.e. for all `Key` objects
 		if key == Key.backspace:
