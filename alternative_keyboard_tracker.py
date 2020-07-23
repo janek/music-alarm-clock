@@ -8,3 +8,4 @@ keyboard.on_press(key_press)
 
 while True:
     time.sleep(1)
+
