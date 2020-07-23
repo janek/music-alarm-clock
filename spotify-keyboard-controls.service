@@ -1,0 +1,12 @@
+[Unit] 
+Description=Keyboard Monitor for controlling Spotify with a numpad
+
+[Service] 
+Type= simple 
+ExecStart= /home/pi/Developer/spotify-alarm-clock/virtualenv/bin/python /home/pi/Developer/spotify-alarm-clock/keyboard_input.py
+WorkingDirectory= /home/pi/Developer/spotify-alarm-clock
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -2,6 +2,7 @@
 flask
 requests
 python-crontab
+pynput
 
 # Keyboard control
 keyboard

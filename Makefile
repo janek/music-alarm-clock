@@ -22,6 +22,18 @@ install:
 	systemctl --user daemon-reload
 	# Enable the service to start system boot (I hope)
 	systemctl --user enable spotify-alarm-clock
+	
+	
+install-keyboard-controls:
+	# Install the keyboard systemd service...
+	# Create systemd directories
+	mkdir -p ~/.config/systemd/user
+	# Copy the service file to systemd directories
+	cp spotify-keyboard-controls.service ~/.config/systemd/user
+	# Reload the systemd daemon: https://askubuntu.com/a/1143989/413683
+	systemctl --user daemon-reload
+	# Enable the service to start system boot (I hope)
+	systemctl --user enable spotify-keyboard-controls
 
 dev:
 	sudo -E ./virtualenv/bin/python keyboard_control.py
