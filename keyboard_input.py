@@ -26,9 +26,8 @@ def on_press(key):
 			print("voldown")
 		elif key.char == "0":
 			print("0 caught")
-		elif key.char == ".":
-			pause()
-			print("pause")
+		elif key.char == "." or key.vk == 47:
+			playpause()
 		elif key.char in ['1','2','3','4','5','6','7','8','9']:
 			if numlock_modifier_on:
 				set_volume(int(key.char))
