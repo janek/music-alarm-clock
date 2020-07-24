@@ -1,7 +1,6 @@
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
 from playlists import playlists
-from playsound import playsound
 from server import play, pause, playpause, set_volume
 
 
@@ -16,7 +15,6 @@ def on_press(key):
 	
 	try:
 		#TODO: how can this form be made clearer? a dictionary with code and action? remember vk vs char
-		playsound('Ping.aiff')
 		print(key.vk, key.char)
 		if key.vk == 76:
 			print("got enter")
