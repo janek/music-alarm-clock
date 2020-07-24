@@ -1,19 +1,22 @@
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
 from playlists import playlists
+from playsound import playsound
 from server import play, pause, playpause, set_volume
+
 
 numlock_modifier_on = False
 
 
 def on_press(key):
 	global numlock_modifier_on
-	# 0-9 and /*.-+ are a `KeyCode` with `char` equal to the character on the key
+	# 0-9 and /*.-+ are a `KeyCode` with `char` equal to the character on the key and some `vk`
 	# enter and numlock are a `KeyCode` with `char` empty but `vk` equal to 76 and 71
 	# backspace is a `Key` with enum value Key.backspace
-
+	
 	try:
 		#TODO: how can this form be made clearer? a dictionary with code and action? remember vk vs char
+		playsound('Ping.aiff')
 		print(key.vk, key.char)
 		if key.vk == 76:
 			print("got enter")
