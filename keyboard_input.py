@@ -1,7 +1,7 @@
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
 from playlists import playlists
-from server import play, pause, playpause, set_volume
+from server import play, pause, playpause, set_volume, spotify_request
 
 
 numlock_modifier_on = False
@@ -12,6 +12,20 @@ def on_press(key):
 	# 0-9 and /*.-+ are a `KeyCode` with `char` equal to the character on the key and some `vk`
 	# enter and numlock are a `KeyCode` with `char` empty but `vk` equal to 76 and 71
 	# backspace is a `Key` with enum value Key.backspace
+	
+	#  __________
+	# | N / * - |
+	# | 7 8 9 + |
+	# | 4 5 6 B |
+	# | 1 2 3 E |
+	# | 0 0 D E |
+	#  __________
+	
+	# PAGE 2 (numlock off):
+	# Key.home, .up, .page_up
+	# .left, 65437, .right
+	# .end, .down, page_down
+	# .insert, .delete, (enter)
 	
 	try:
 		#TODO: how can this form be made clearer? a dictionary with code and action? remember vk vs char
@@ -40,9 +54,7 @@ def on_press(key):
 				play(spotify_uri=playlists[key.char])
 		
 	except AttributeError:
-		# Happens when key.vk or key.char is empty, i.e. for all `Key` objects
-		if key == Key.backspace:
-			print("Got backspace")
+		print(key)
 
 with Listener(on_press=on_press) as listener:
 	listener.join()
