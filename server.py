@@ -108,13 +108,18 @@ def playpause():
     else:
         play()
         
+def previous():
+    return spotify_request("previous", "POST")
+
+def next():
+    return spotify_request("next", "POST")
+
 def get_devices():
     response = spotify_request("devices", "GET")
     return response
 
-
 def set_volume(new_volume):
-    url_params = {"volume_percent":str((new_volume+1)*10)}
+    url_params = {"volume_percent":str(new_volume)}
     response = spotify_request("volume", url_params=url_params)
     return response
 
