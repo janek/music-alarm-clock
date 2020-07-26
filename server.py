@@ -117,9 +117,9 @@ def next():
     
 def toggle_shuffle():
     global shuffle
-    url_params = {"state":str(!shuffle).lower}
-    shuffle = !shuffle 
-    return spotify_request("next", "POST")
+    url_params = {"state":str(shuffle).lower()}
+    shuffle = not shuffle
+    return spotify_request("shuffle", "PUT", url_params=url_params)
 
 def get_devices():
     response = spotify_request("devices", "GET")
@@ -138,10 +138,13 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
         url_params["device_id"] = SPOTIFY_DEVICE_ID
     url = SPOTIFY_PLAYER_URL + "/" + endpoint
     headers = {'Authorization': 'Bearer {}'.format(token)} 
+    
     if http_method == "PUT":
         response = requests.put(url, data=data, headers=headers, params=url_params)
     elif http_method == "GET":
         response = requests.get(url, data=data, headers=headers, params=url_params)
+    elif http_method == "POST":
+        response = requests.post(url, data=data, headers=headers, params=url_params)
 
     if response.status_code == 401:
         # If token is expired, get a new one and retry
