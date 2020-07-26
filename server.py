@@ -31,6 +31,7 @@ SYSTEM_USER = os.environ.get('USER')
 SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
+shuffle = False
 
 @app.route("/spotiauth")
 def spotiauth():
@@ -112,6 +113,12 @@ def previous():
     return spotify_request("previous", "POST")
 
 def next():
+    return spotify_request("next", "POST")
+    
+def toggle_shuffle():
+    global shuffle
+    url_params = {"state":str(!shuffle).lower}
+    shuffle = !shuffle 
     return spotify_request("next", "POST")
 
 def get_devices():
