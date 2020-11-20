@@ -48,9 +48,10 @@ def spotiauth():
     headers = {"Authorization": "Basic {}".format(b64_auth_str)}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
     response_data = json.loads(post_request.text)
-    handle_possible_error_in_api_response(response_data)
-    
-    if "access_token" in response_data:
+    error = handle_and_return_possible_error_message_in_api_response(response_data)
+    if error:
+        return error
+    elif "access_token" in response_data:
         access_token = response_data["access_token"]
         file = open("access_token.txt", "w")
         file.write(access_token)
@@ -141,13 +142,12 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
 
     return response
 
-def handle_possible_error_in_api_response(response_data):
+def handle_and_return_possible_error_message_in_api_response(response_data):
     if "error" in response_data:
         error_description = response_data["error_description"]
         app.logger.info(error_description)
         run(["espeak", error_description])
-    return
-
+        return error_description
 
 def access_token_from_file():
     file = open("access_token.txt","r")
