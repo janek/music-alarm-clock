@@ -48,17 +48,18 @@ def spotiauth():
     headers = {"Authorization": "Basic {}".format(b64_auth_str)}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
     response_data = json.loads(post_request.text)
+    handle_possible_error_in_api_response(response_data)
     
-    if "error" in response_data:
-        return response_data["error"]
-    elif "access_token" in response_data:
+    if "access_token" in response_data:
         access_token = response_data["access_token"]
         file = open("access_token.txt", "w")
         file.write(access_token)
         file.close()
+        # XXX : should this return the token? or a message? nothing? 
+        app.logger.info("Retrieved and saved access token")
         return access_token
     else:
-        return "Unknown problem with response to spoti auth"
+        return "Unknown problem with response to spotiauth"
 
 @app.route("/spotipause")
 def spotipause():
@@ -79,7 +80,7 @@ def play(spotify_uri=None, song_number=0, retries_attempted=0):
     if spotify_uri != None:
         data = '{"context_uri":"' + spotify_uri + '","offset":{"position":' + str(song_number) + '},"position_ms":0}'
     response = spotify_request("play", force_device=True, data=data)
-    print(response.text)
+    app.logger.info(response.text)
     if response.ok:
         currently_playing = True
     if response.status_code == 404:
@@ -88,7 +89,7 @@ def play(spotify_uri=None, song_number=0, retries_attempted=0):
         try: 
             radioplay()
         except:
-            print("Failed to play radio")
+            app.logger.info("Failed to play radio")
             
     return response
 
@@ -120,6 +121,7 @@ def set_volume(new_volume):
 
 
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}):
+    app.logger.info('Request to endpoint ' + endpoint + ' attempted')
     if token is None:
         token = access_token_from_file()
     if force_device:
@@ -139,6 +141,13 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
 
     return response
 
+def handle_possible_error_in_api_response(response_data):
+    if "error" in response_data:
+        error_description = response_data["error_description"]
+        app.logger.info(error_description)
+        run(["espeak", error_description])
+    return
+
 
 def access_token_from_file():
     file = open("access_token.txt","r")
@@ -149,7 +158,6 @@ def access_token_from_file():
 
 @app.route("/radioplay")
 def radioplay():
-    # run(["omxplayer", RADIO_LUZ_STREAM_URL])
     app.logger.info('Starting radio')
     run(["mpc", "add", RADIO_LUZ_STREAM_URL])
     run(["mpc", "play"])
