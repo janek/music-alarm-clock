@@ -2,6 +2,7 @@ import json
 from flask import Flask, request
 import requests
 from subprocess import run
+import subprocess
 import base64
 from crontab import CronTab
 import config_reader as cfg
@@ -198,7 +199,9 @@ def cronclean():
 
 @app.route('/areyourunning', methods=['GET'])
 def areyourunning():
-    return "Alarm-clock server is running."
+    message = "Alarm-clock server is running."
+    say(message)
+    return message
 
 if __name__ == '__main__':
     app.run(debug=True, port=PORT, host='0.0.0.0')
