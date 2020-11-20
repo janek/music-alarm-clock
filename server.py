@@ -146,7 +146,7 @@ def handle_and_return_possible_error_message_in_api_response(response_data):
     if "error" in response_data:
         error_description = response_data["error_description"]
         app.logger.info(error_description)
-        run(["espeak", error_description])
+        say("Error: " + error_description)
         return error_description
 
 def access_token_from_file():
@@ -155,6 +155,8 @@ def access_token_from_file():
     file.close()
     return access_token
 
+def say(something):
+    run(["espeak", something], stdout=subprocess.DEVNULL)
 
 @app.route("/radioplay")
 def radioplay():
