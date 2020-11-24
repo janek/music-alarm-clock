@@ -26,7 +26,7 @@ RADIO_LUZ_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 HOSTNAME = "0.0.0.0"
 PORT = 3141
 THIS_SERVER_ADDRESS = "http://" + HOSTNAME + ":" + str(PORT)
-
+SPOTIFY_REDIRECT_URI = THIS_SERVER_ADDRESS + "/authorize_spotify"
 
 # App's global constants
 SYSTEM_USER = os.environ.get('USER')
@@ -35,15 +35,27 @@ ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
 
 
+
 # TODO: In context of /login, maybe rename to refresh auth
-@app.route("/spotiauth")
-def spotiauth():
-    # Ask for a new access token, using the refresh token,
-    # CLIENT_ID and CLIENT_SECRET. Save it to a file.
-    data = {
-        "grant_type": "refresh_token",
-        "refresh_token": cfg.get_spotify_refresh_token()
-    }
+@app.route("/request_spotify_authorization")
+def request_spotify_authorization(code=None):
+    if code != None:
+        # Ask for a refresh token and access token using code received from Spotify in /login
+        # (Step 2 of 'Authorization Code Flow')
+        # https://developer.spotify.com/documentation/general/guides/authorization-guide/
+        data = {
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": SPOTIFY_REDIRECT_URI,
+        }
+    else:
+        # Ask for an access token using a refresh token
+        # (Step 4 of 'Authorization Code Flow')
+        # https://developer.spotify.com/documentation/general/guides/authorization-guide/
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": cfg.get_spotify_refresh_token()
+        }
 
     client_id = cfg.get_spotify_client_id()
     client_secret = cfg.get_spotify_client_secret()
@@ -53,6 +65,7 @@ def spotiauth():
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
     response_data = json.loads(post_request.text)
     error = handle_and_return_possible_error_message_in_api_response(response_data)
+    
     if error:
         return error
     elif "access_token" in response_data:
@@ -60,19 +73,28 @@ def spotiauth():
         file = open("access_token.txt", "w")
         file.write(access_token)
         file.close()
-        # XXX : should this return the token? or a message? nothing? 
-        app.logger.info("Retrieved and saved access token")
-        return access_token
+        refresh_token_received = "refresh_token" in response_data
+        if refresh_token_received:
+            refresh_token = response_data["access_token"]
+            cfg.set_spotify_refresh_token(refresh_token)
+        message = "Retrieved and saved access token" + " and refresh token" if refresh_token_received else ""
+        app.logger.info(message)
+        return message
     else:
-        return "Unknown problem with response to spotiauth"
-        
+        return "Unknown problem with response to request_spotify_authorization"
+
+@app.route("/authorize_spotify")
+def authorize_spotify():
+    # XXX: Handle erroneous response 
+    # (https://developer.spotify.com/documentation/general/guides/authorization-guide/)
+    code = request.args.get('code')
+    status_message = request_spotify_authorization(code=code)
+    return status_message 
         
 @app.route("/login")
 def login():
     scopes = "user-read-playback-state user-modify-playback-state"
-    redirect_uri = THIS_SERVER_ADDRESS + url_for('areyourunning')
-    login_url = SPOTIFY_AUTH_URL + '?response_type=code' + '&client_id=' + cfg.get_spotify_client_id() + '&scope=' + parse.quote(scopes) + '&redirect_uri=' + parse.quote(redirect_uri)
-    print(login_url)
+    login_url = SPOTIFY_AUTH_URL + '?response_type=code' + '&client_id=' + cfg.get_spotify_client_id() + '&scope=' + parse.quote(scopes) + '&redirect_uri=' + parse.quote(SPOTIFY_REDIRECT_URI)
     return redirect(login_url, code=302)
 
 
@@ -189,7 +211,7 @@ def cronsave():
     if music_mode == "luz":
         command = "curl " + THIS_SERVER_ADDRESS + "/radioplay"
     else:
-        command = "curl " + THIS_SERVER_ADDRESS + "/spotiauth && curl " + THIS_SERVER_ADDRESS + "/spotiplay"
+        command = "curl " + THIS_SERVER_ADDRESS + "/request_spotify_authorization && curl " + THIS_SERVER_ADDRESS + "/spotiplay"
     cron_raspi = CronTab(user=SYSTEM_USER)
     cron_raspi.remove_all(comment=ALARM_ANNOTATION_TAG)
     job = cron_raspi.new(command=command, comment=ALARM_ANNOTATION_TAG)

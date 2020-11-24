@@ -21,7 +21,6 @@ def get_spotify_client_id():
     validate_id_or_secret(client_id)
     return client_id
 
-
 def get_spotify_client_secret():
     client_secret = CONFIG["SPOTIFY"]["CLIENT_SECRET"]
     validate_id_or_secret(client_secret)
@@ -39,6 +38,10 @@ def get_spotify_refresh_token():
     token = CONFIG["SPOTIFY"]["REFRESH_TOKEN"]
     assert len(token) > 60
     return token
+    
+def set_spotify_refresh_token(token):
+    assert len(token) > 60
+    CONFIG["SPOTIFY"]["REFRESH_TOKEN"] = token
 
 def validate_id_or_secret(value):
     assert len(value) == 32
