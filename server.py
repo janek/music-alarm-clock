@@ -110,10 +110,6 @@ def playpause():
         pause()
     else:
         play()
-        
-def get_devices():
-    response = spotify_request("devices", "GET")
-    return response
 
 
 def set_volume(new_volume):
