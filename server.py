@@ -1,5 +1,6 @@
 import json
-from flask import Flask, request
+from flask import Flask, request, redirect, url_for
+from urllib import parse
 import requests
 from subprocess import run
 import subprocess
@@ -24,7 +25,7 @@ RADIO_LUZ_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 
 HOSTNAME = "0.0.0.0"
 PORT = 3141
-THIS_SERVER_ADDRESS = HOSTNAME + ":" + str(PORT)
+THIS_SERVER_ADDRESS = "http://" + HOSTNAME + ":" + str(PORT)
 
 
 # App's global constants
@@ -33,6 +34,8 @@ SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
 
+
+# TODO: In context of /login, maybe rename to refresh auth
 @app.route("/spotiauth")
 def spotiauth():
     # Ask for a new access token, using the refresh token,
@@ -62,6 +65,16 @@ def spotiauth():
         return access_token
     else:
         return "Unknown problem with response to spotiauth"
+        
+        
+@app.route("/login")
+def login():
+    scopes = "user-read-playback-state user-modify-playback-state"
+    redirect_uri = THIS_SERVER_ADDRESS + url_for('areyourunning')
+    login_url = SPOTIFY_AUTH_URL + '?response_type=code' + '&client_id=' + cfg.get_spotify_client_id() + '&scope=' + parse.quote(scopes) + '&redirect_uri=' + parse.quote(redirect_uri)
+    print(login_url)
+    return redirect(login_url, code=302)
+
 
 @app.route("/spotipause")
 def spotipause():
