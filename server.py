@@ -101,13 +101,13 @@ def login():
 @app.route("/spotipause")
 def spotipause():
     response = pause()
-    return "Pause request sent to Spotify, response: \n" + response.text
+    return "Pause request sent to Spotify. Response: " + str(response.status_code) + " " + response.text
 
 
 @app.route("/spotiplay")
 def spotiplay():
     response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
-    return "Play request sent to Spotify, response: \n" + response.text
+    return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
 
 def play(spotify_uri=None, song_number=0, retries_attempted=0): 
