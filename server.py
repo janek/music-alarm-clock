@@ -160,8 +160,13 @@ def radioplay():
     app.logger.info('Starting radio')
     run(["mpc", "add", RADIO_LUZ_STREAM_URL])
     run(["mpc", "play"])
-    return "LUZ"
+    return "Radio started"
 
+@app.route("/radiostop")
+def radiostop():
+    app.logger.info('Stopping radio')
+    run(["mpc", "stop"])
+    return "Radio stopped"
 
 @app.route('/cronsave', methods=['POST'])
 def cronsave():
