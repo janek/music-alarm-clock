@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, Response
 from urllib import parse
 import requests
 from subprocess import run
@@ -62,10 +62,9 @@ def request_spotify_authorization(code=None):
     auth_str = '{}:{}'.format(client_id, client_secret)
     b64_auth_str = base64.urlsafe_b64encode(auth_str.encode()).decode()
     headers = {"Authorization": "Basic {}".format(b64_auth_str)}
-    post_request = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
-    response_data = json.loads(post_request.text)
-    error = handle_and_return_possible_error_message_in_api_response(response_data)
-    
+    response = requests.post(SPOTIFY_TOKEN_URL, data=data, headers=headers)
+    error = handle_and_return_possible_error_message_in_api_response(response)
+    response_data = response.json()
     if error:
         return error
     elif "access_token" in response_data:
@@ -117,16 +116,15 @@ def play(spotify_uri=None, song_number=0, retries_attempted=0):
     if spotify_uri != None:
         data = '{"context_uri":"' + spotify_uri + '","offset":{"position":' + str(song_number) + '},"position_ms":0}'
     response = spotify_request("play", force_device=True, data=data)
-    app.logger.info(response.text)
     if response.ok:
         currently_playing = True
     if response.status_code == 404:
         # Hardcoded device not found
-        app.logger.info('Device not found, attempting radio')
         try: 
             radioplay()
+            app.logger.info('Spotify device not found, playing radio')
         except:
-            app.logger.info("Failed to play radio")
+            app.logger.info("Spotify device not found and failed to play radio")
             
     return response
 
@@ -146,15 +144,13 @@ def playpause():
     else:
         play()
 
-
 def set_volume(new_volume):
     url_params = {"volume_percent":str((new_volume+1)*10)}
     response = spotify_request("volume", url_params=url_params)
     return response
 
-
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}):
-    app.logger.info('Request to endpoint ' + endpoint + ' attempted')
+    app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
     if token is None:
         token = access_token_from_file()
     if force_device:
@@ -166,20 +162,27 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
     elif http_method == "GET":
         response = requests.get(url, data=data, headers=headers, params=url_params)
 
+    handle_and_return_possible_error_message_in_api_response(response)
     if response.status_code == 401:
-        # If token is expired, get a new one and retry
-        token = spotiauth()
+        # If the access token is expired, get a new one and retry
+        token = request_spotify_authorization()
         headers = {'Authorization': 'Bearer {}'.format(token)}
         response = requests.put(url, data=data, headers=headers, params=url_params)
-
     return response
 
-def handle_and_return_possible_error_message_in_api_response(response_data):
+def handle_and_return_possible_error_message_in_api_response(response: Response):
+    if response.ok:
+        return
+    response_data = response.json()
+    
     if "error" in response_data:
-        error_description = response_data["error_description"]
-        app.logger.info(error_description)
-        say("Error: " + error_description)
-        return error_description
+        if "error_description" in response_data:
+            error_message =  response_data["error_description"]
+        elif "message" in response_data["error"]:
+            error_message = response_data["error"]["message"] 
+        app.logger.info(error_message)
+        say("Error: " + error_message)
+        return error_message
 
 def access_token_from_file():
     file = open("access_token.txt","r")
@@ -231,7 +234,6 @@ def cronclean():
     cron_raspi.remove_all(comment=ALARM_ANNOTATION_TAG)
     cron_raspi.write()
     return "All alarms cleared."
-
 
 @app.route('/areyourunning', methods=['GET'])
 def areyourunning():

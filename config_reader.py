@@ -36,7 +36,7 @@ def get_spotify_device_id():
 
 def get_spotify_refresh_token():
     token = CONFIG["SPOTIFY"]["REFRESH_TOKEN"]
-    assert len(token) > 60
+    # assert len(token) > 60
     return token
     
 def set_spotify_refresh_token(token):
