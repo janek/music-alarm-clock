@@ -5,3 +5,6 @@ python-crontab
 
 # Keyboard control
 keyboard
+
+# Development
+pytest
