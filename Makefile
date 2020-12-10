@@ -25,3 +25,6 @@ install:
 
 dev:
 	sudo -E ./virtualenv/bin/python keyboard_control.py
+
+test:
+	./virtualenv/bin/pytest
