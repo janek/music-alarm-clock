@@ -2,4 +2,5 @@ config.ini
 access_token.txt
 __pycache__/
 virtualenv
-nova
+.nova/
+

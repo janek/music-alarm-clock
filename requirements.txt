@@ -6,3 +6,6 @@ pynput
 
 # Keyboard control
 keyboard
+
+# Development
+pytest
