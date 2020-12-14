@@ -170,7 +170,7 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
         response = requests.put(url, data=data, headers=headers, params=url_params)
     return response
 
-def handle_and_return_possible_error_message_in_api_response(response: Response):
+def handle_and_return_possible_error_message_in_api_response(response):
     if response.ok:
         return
     response_data = response.json()

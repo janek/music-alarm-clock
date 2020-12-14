@@ -2,7 +2,9 @@
 flask
 requests
 python-crontab
-espeak
 
 # Keyboard control
 keyboard
+
+# Development
+pytest
