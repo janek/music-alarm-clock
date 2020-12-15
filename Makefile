@@ -37,7 +37,7 @@ install-keyboard-controls:
 	systemctl --user enable spotify-keyboard-controls
 
 dev:
-	sudo -E ./virtualenv/bin/python keyboard_input.py
+	sudo -E DISPLAY=:0.0 ./virtualenv/bin/python keyboard_input.py
 
 test:
 	./virtualenv/bin/pytest
