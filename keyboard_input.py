@@ -25,8 +25,6 @@ def on_press(key):
 	# .left, 65437, .right
 	# .end, .down, page_down
 	# .insert, .delete, (enter)
-	print(key)
-
 	try:
 		# Still unused: /, *, -, 0
 		if key.char == '+':
@@ -51,6 +49,8 @@ def on_press(key):
 			previous()
 		elif key in numpad_keys_without_numlock:
 			set_volume_step(numpad_keys_without_numlock.index(key) + 1)
+	except Exception:
+		print("Exception raised")
 		
 def set_volume_step(step):
 	set_volume(step*10)
