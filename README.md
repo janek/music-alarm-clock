@@ -7,7 +7,7 @@ Warning: WIP: the README is lacking and the setup is not smooth
 
 ```bash
 # Get dependencies: cURL for Raspotify and virtualenv for the project
-sudo apt install curl virtualenv
+sudo apt install curl virtualenv mpd mpc
 # Install Raspotify
 curl -sL https://dtcooper.github.io/raspotify/install.sh | sh
 # Install the Python dependencies in a virtualenv
