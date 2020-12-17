@@ -157,10 +157,6 @@ def toggle_shuffle():
     shuffle = not shuffle
     return spotify_request("shuffle", "PUT", url_params=url_params)
 
-def get_devices():
-    response = spotify_request("devices", "GET")
-    return response
-
 def set_volume(new_volume):
     url_params = {"volume_percent":str(new_volume)}
     response = spotify_request("volume", url_params=url_params)
