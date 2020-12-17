@@ -40,7 +40,7 @@ shuffle = False
 # TODO: In context of /login, maybe rename to refresh auth
 @app.route("/request_spotify_authorization")
 def request_spotify_authorization(code=None):
-    if code != None:
+    if code is not None:
         # Ask for a refresh token and access token using code received from Spotify in /login
         # (Step 2 of 'Authorization Code Flow')
         # https://developer.spotify.com/documentation/general/guides/authorization-guide/
