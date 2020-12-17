@@ -20,7 +20,8 @@ API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
-ACCESS_TOKEN_PATH =  + os.path.join(os.path.dirname(__file__), "access_token.txt")
+ACCESS_TOKEN_PATH = os.path.dirname(__file__) + "/access_token.txt"
+
 
 RADIO_LUZ_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 
