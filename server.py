@@ -20,6 +20,7 @@ API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
+ACCESS_TOKEN_PATH = os.path.dirname(__file__) + "/access_token.txt"
 
 RADIO_LUZ_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 
@@ -70,7 +71,7 @@ def request_spotify_authorization(code=None):
         return error
     elif "access_token" in response_data:
         access_token = response_data["access_token"]
-        file = open("access_token.txt", "w")
+        file = open(ACCESS_TOKEN_PATH, "w")
         file.write(access_token)
         file.close()
         refresh_token_received = "refresh_token" in response_data
@@ -201,7 +202,7 @@ def handle_and_return_possible_error_message_in_api_response(response):
         return error_message
 
 def access_token_from_file():
-    file = open("access_token.txt","r")
+    file = open(ACCESS_TOKEN_PATH,"r")
     access_token = file.read()
     file.close()
     return access_token
