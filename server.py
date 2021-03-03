@@ -74,7 +74,7 @@ def request_spotify_authorization(code=None):
         file.close()
         refresh_token_received = "refresh_token" in response_data
         if refresh_token_received:
-            refresh_token = response_data["access_token"]
+            refresh_token = response_data["refresh_token"]
             cfg.set_spotify_refresh_token(refresh_token)
         message = "Retrieved and saved access token" + " and refresh token" if refresh_token_received else ""
         app.logger.info(message)
