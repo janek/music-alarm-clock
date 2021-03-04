@@ -24,6 +24,7 @@ The server is managed via a systemd service. Here's a quick cheatsheet:
 - `systemctl --user start spotify-alarm-clock` - Start the service manually.
 - `systemctl --user stop spotify-alarm-clock` - Stop the service manually.
 
-## Usage
+## Development
 
-- iOS shortcut: https://www.icloud.com/shortcuts/f5d2caf18278496cb99f1f594c5ae398 (change the hardcoded IP to the IP of your server)
+- `./virtualenv/bin/python server.py`
+
