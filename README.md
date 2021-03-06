@@ -6,8 +6,8 @@ Warning: WIP: the README is lacking and the setup is not smooth
 ## Installation
 
 ```bash
-# Get dependencies: cURL for Raspotify and virtualenv for the project
-sudo apt install curl virtualenv espeak
+# Get non-python dependencies
+sudo apt install curl virtualenv espeak mpc
 # Install Raspotify
 curl -sL https://dtcooper.github.io/raspotify/install.sh | sh
 # Install the Python dependencies in a virtualenv
