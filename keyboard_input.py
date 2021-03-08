@@ -65,7 +65,10 @@ def on_press(key):
         elif key == Key.backspace:
             previous()
         elif key in numpad_keys_without_numlock:
-            set_volume_step(numpad_keys_without_numlock.index(key) + 1)
+            print("play num " + key.char)
+            play(spotify_uri=playlists[key.char])
+            # TODO:
+            # set_volume_step(numpad_keys_without_numlock.index(key) + 1)
     except Exception as e:
         print("Exception: ", e)
 
