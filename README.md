@@ -6,9 +6,14 @@ Warning: WIP: the README is lacking and the setup is not smooth
 ## Installation
 
 ```bash
+<<<<<<< HEAD
 # Get dependencies: cURL for Raspotify and virtualenv for the project
 
 sudo apt install curl virtualenv espeak
+=======
+# Get non-python dependencies
+sudo apt install curl virtualenv espeak mpc
+>>>>>>> master
 # Install Raspotify
 curl -sL https://dtcooper.github.io/raspotify/install.sh | sh
 # Install the Python dependencies in a virtualenv
@@ -25,6 +30,7 @@ The server is managed via a systemd service. Here's a quick cheatsheet:
 - `systemctl --user start spotify-alarm-clock` - Start the service manually.
 - `systemctl --user stop spotify-alarm-clock` - Stop the service manually.
 
-## Usage
+## Development
 
-- iOS shortcut: https://www.icloud.com/shortcuts/f5d2caf18278496cb99f1f594c5ae398 (change the hardcoded IP to the IP of your server)
+- `./virtualenv/bin/python server.py`
+
