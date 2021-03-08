@@ -1,6 +1,7 @@
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
-from server import say, radiostop, radioplay, radionext, playpause
+from server import say, radiostop, radioplay, radionext, playpause, play
+from playlists import playlists
 
 
 
@@ -67,9 +68,6 @@ def on_press(key):
             set_volume_step(numpad_keys_without_numlock.index(key) + 1)
     except Exception as e:
         print("Exception: ", e)
-
-def set_volume_step(n):
-    print("Setting volume not implemented yet, step " + str(n))
 
 with Listener(on_press=on_press) as listener:
     listener.join()
