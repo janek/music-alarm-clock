@@ -65,8 +65,8 @@ def on_press(key):
             previous()
         elif key in numpad_keys_without_numlock:
             set_volume_step(numpad_keys_without_numlock.index(key) + 1)
-    except Exception:
-        print("Exception raised")
+    except Exception as e:
+        print("Exception: ", e)
 
 def set_volume_step(n):
     print("Setting volume not implemented yet, step " + str(n))
