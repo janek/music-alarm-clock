@@ -68,12 +68,8 @@ def on_press(key):
     except Exception:
         print("Exception raised")
 
-def on_press(key):
-    print(key)
-    try:
-        
-    except Exception:
-        print("Hit an exception")
+def set_volume_step(n):
+    print("Setting volume not implemented yet, step " + n)
 
 with Listener(on_press=on_press) as listener:
     listener.join()

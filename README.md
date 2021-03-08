@@ -16,6 +16,8 @@ make dependencies
 make install
 ```
 
+For keyboard controls, make sure your [DISPLAY variable is set](https://pynput.readthedocs.io/en/latest/limitations.html?highlight=DISPLAY#linux)
+
 ## Systemd service
 
 The server is managed via a systemd service. Here's a quick cheatsheet:
@@ -27,4 +29,3 @@ The server is managed via a systemd service. Here's a quick cheatsheet:
 ## Development
 
 - `./virtualenv/bin/python server.py`
-
