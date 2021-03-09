@@ -111,6 +111,8 @@ def spotiplay():
     response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
+def switch_device():
+    return None
 
 def play(spotify_uri=None, song_number=0, retries_attempted=0): 
     # XXX: naming problem between this and spotiplay
@@ -138,7 +140,6 @@ def pause():
     if response.ok:
         currently_playing = False
     return response
-
 
 def playpause():
     global currently_playing

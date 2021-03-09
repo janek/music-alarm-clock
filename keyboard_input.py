@@ -1,6 +1,6 @@
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
-from server import say, radiostop, radioplay, radionext, playpause, play
+from server import say, radiostop, radioplay, radionext, playpause, play, switch_device
 from playlists import playlists
 
 
@@ -49,6 +49,8 @@ def on_press(key):
         elif key.char in ['1','2','3','4','5','6','7','8','9']:
             print("play num " + key.char)
             play(spotify_uri=playlists[key.char])
+        elif key.char == '0':
+            switch_device()
         elif key.vk == 65437:
             # Special case: this is the "vk" value 
             # of the number 5 when numlock is off.
@@ -56,7 +58,8 @@ def on_press(key):
             set_volume_step(5)
     except AttributeError:
         # Still unused (.insert)
-        
+        if key == Key.insert:
+            switch_device()
         # Spotify
         if key == Key.enter: 
             playpause()
