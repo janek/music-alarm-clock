@@ -1,6 +1,6 @@
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
-from server import say, radiostop, radioplay, radionext, playpause, play, switch_device
+from server import say, radiostop, radioplay, radionext, playpause, play, switch_device, previous, next
 from playlists import playlists
 
 
@@ -46,7 +46,7 @@ def on_press(key):
         if key.char == '+':
             toggle_shuffle()
         elif key.char in [".", ","]:
-            previous()
+            next()
         elif key.char in ['1','2','3','4','5','6','7','8','9']:
             print("play num " + key.char)
             play(spotify_uri=playlists[key.char])
