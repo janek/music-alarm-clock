@@ -34,9 +34,12 @@ SPOTIFY_REDIRECT_URI = THIS_SERVER_ADDRESS + "/authorize_spotify"
 SYSTEM_USER = os.environ.get('USER')
 SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
+
+# State
 currently_playing = False
 shuffle = False
-
+devices_dict = {}
+current_device = "kuehlschrank"
 
 
 # TODO: In context of /login, maybe rename to refresh auth
@@ -111,16 +114,26 @@ def spotiplay():
     response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
+@app.route("/switch_device")
 def switch_device():
-    return None
+    global devices_dict, current_device
+    if devices_dict == {}:
+        devices()
+    if current_device == "kuehlschrank":
+        desired_device = "janek-pi"
+    elif current_device == "janek-pi":
+        desired_device = "kuehlschrank"
+    response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ", force_device=devices_dict[desired_device])
+    current_device = desired_device
+    return "Playback switched to " + current_device
 
-def play(spotify_uri=None, song_number=0, retries_attempted=0): 
-    # XXX: naming problem between this and spotiplay
+def play(spotify_uri=None, force_device=None, song_number=0, retries_attempted=0): 
+    # TODO: put all this in spotiplay
     global currently_playing
     data = ''
     if spotify_uri != None:
         data = '{"context_uri":"' + spotify_uri + '","offset":{"position":' + str(song_number) + '},"position_ms":0}'
-    response = spotify_request("play", force_device=True, data=data)
+    response = spotify_request("play", force_device=force_device, data=data)
     if response.ok:
         currently_playing = True
     if response.status_code == 404:
@@ -132,7 +145,6 @@ def play(spotify_uri=None, song_number=0, retries_attempted=0):
             app.logger.info("Spotify device not found and failed to play radio")
             
     return response
-
 
 def pause():
     global currently_playing
@@ -165,12 +177,12 @@ def set_volume(new_volume):
     response = spotify_request("volume", url_params=url_params)
     return response
 
-def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}):
+def spotify_request(endpoint, http_method="PUT",  data=None, force_device=None, token=None, url_params={}):
     app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
     if token is None:
         token = access_token_from_file()
     if force_device:
-        url_params["device_id"] = SPOTIFY_DEVICE_ID
+        url_params["device_id"] = force_device
     url = SPOTIFY_PLAYER_URL + "/" + endpoint
     headers = {'Authorization': 'Bearer {}'.format(token)} 
     
@@ -255,8 +267,12 @@ def cronsave():
 
 @app.route('/devices', methods=['GET'])
 def devices():
+    global devices_dict
     response = spotify_request("devices", http_method="GET")
-    return response.text
+    devices_json = json.loads(response.text)
+    for device in devices_json['devices']:
+        devices_dict[device['name']] = device['id']
+    return devices_json
 
 @app.route('/cronclean', methods=['GET'])
 def cronclean():

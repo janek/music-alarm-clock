@@ -27,6 +27,7 @@ def on_press(key):
     # .left, 65437, .right
     # .end, .down, page_down
     # .insert, .delete, (enter)
+    print(key)
     try:
         # Still unused: 0
         
