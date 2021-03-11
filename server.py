@@ -102,12 +102,10 @@ def login():
     login_url = SPOTIFY_AUTH_URL + '?response_type=code' + '&client_id=' + cfg.get_spotify_client_id() + '&scope=' + parse.quote(scopes) + '&redirect_uri=' + parse.quote(SPOTIFY_REDIRECT_URI)
     return redirect(login_url, code=302)
 
-
 @app.route("/spotipause")
 def spotipause():
     response = pause()
     return "Pause request sent to Spotify. Response: " + str(response.status_code) + " " + response.text
-
 
 @app.route("/spotiplay")
 def spotiplay():
@@ -123,9 +121,11 @@ def switch_device():
         desired_device = "janek-pi"
     elif current_device == "janek-pi":
         desired_device = "kuehlschrank"
-    response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ", force_device=devices_dict[desired_device])
+    data = '{"device_ids":["' + devices_dict[desired_device] + '"]}'
+    response = spotify_request("", data=data)
     current_device = desired_device
     return "Playback switched to " + current_device
+
 
 def play(spotify_uri=None, force_device=None, song_number=0, retries_attempted=0): 
     # TODO: put all this in spotiplay
