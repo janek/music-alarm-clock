@@ -8,6 +8,7 @@ import base64
 from crontab import CronTab
 import config_reader as cfg
 import os
+import socket
 # from playlists import playlists #TODO
 
 app = Flask(__name__)
@@ -23,7 +24,19 @@ SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
 
 RADIO_LUZ_STREAM_URL = "http://radioluz.pwr.edu.pl:8000/luzlofi.ogg"
 
-HOSTNAME = "0.0.0.0"
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't have to be reachable
+        s.connect(('10.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
+HOSTNAME = get_local_ip()
 PORT = 3141
 THIS_SERVER_ADDRESS = "http://" + HOSTNAME + ":" + str(PORT)
 SPOTIFY_REDIRECT_URI = THIS_SERVER_ADDRESS + "/authorize_spotify"
