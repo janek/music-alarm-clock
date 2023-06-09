@@ -3,6 +3,11 @@ Takes a time via an http request, saves it to crontab, uses the Spotify API to s
 
 Warning: WIP: the README is lacking and the setup is not smooth
 
+## Setting up the Raspberry Pi
+- Install the OS in headless mode following [Tom's Hardware Guide](https://www.tomshardware.com/reviews/raspberry-pi-headless-setup-how-to,6028.html)
+- Install [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver) with the USB audio card already plugged in. Spotify and AirPlay should work immediately, bluetooth could need a restart. 
+- Install this repo's contents (below)
+
 ## Installation
 
 ```bash
@@ -20,9 +25,18 @@ make install
 
 The server is managed via a systemd service. Here's a quick cheatsheet:
 
+- at the moment the service expects the repository to be located at `/home/pi/Developer/spotify-alarm-clock/` and will not work otherwise. You can change the location in `spotify-alarm-clock.service`
 - `systemctl --user status spotify-alarm-clock` - Get general information about the service (like whether it is running and some latest logs).
 - `systemctl --user start spotify-alarm-clock` - Start the service manually.
 - `systemctl --user stop spotify-alarm-clock` - Stop the service manually.
+- `journalctl --user spotify-alarm-clock`
+
+## Spotify authorization
+- Create an app on Spotify
+- Get the local IP of your raspberry pi, for example `192.168.0.38`
+- Make sure `http://192.168.0.38:3141/authorize_spotify` is whitelisted on your [Spotify dashboard](https://developer.spotify.com/dashboard/) (substituting 192.168.0.38 for your raspberry pi's IP)
+- Go to `http://192.168.0.38:3141/login` (substituting 192.168.0.38 for your raspberry pi's IP)
+
 
 ## Development
 
