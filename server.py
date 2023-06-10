@@ -122,8 +122,7 @@ def spotiplay():
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
 
-def play(spotify_uri=None, song_number=0, retries_attempted=0): 
-    # XXX: naming problem between this and spotiplay
+def play(spotify_uri=None, song_number=0): 
     global currently_playing
     data = ''
     if spotify_uri != None:
