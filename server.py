@@ -161,7 +161,7 @@ def set_volume(new_volume):
     response = spotify_request("volume", url_params=url_params)
     return response
 
-def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}):
+def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}, retries_attempted=0):
     app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
     if token is None:
         token = access_token_from_file()
@@ -174,12 +174,16 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
     elif http_method == "GET":
         response = requests.get(url, data=data, headers=headers, params=url_params)
 
-    handle_and_return_possible_error_message_in_api_response(response)
     if response.status_code == 401:
         # If the access token is expired, get a new one and retry
         token = request_spotify_authorization()
         headers = {'Authorization': 'Bearer {}'.format(token)}
         response = requests.put(url, data=data, headers=headers, params=url_params)
+        # Retry request
+        if retries_attempted < 1:
+            response = spotify_request(endpoint, http_method, data, force_device, token, url_params, retries_attempted+1)
+    else: 
+        handle_and_return_possible_error_message_in_api_response(response)
     return response
 
 def handle_and_return_possible_error_message_in_api_response(response):
