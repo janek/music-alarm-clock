@@ -10,6 +10,7 @@ virtualenv:
 	virtualenv -p /usr/bin/python3 virtualenv
 
 dependencies: virtualenv
+	sudo apt install curl virtualenv espeak mpc mpd
 	./virtualenv/bin/pip install --upgrade -r requirements.txt
 
 install:
