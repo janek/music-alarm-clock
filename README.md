@@ -7,15 +7,12 @@ Warning: WIP: the README is lacking and the setup is not smooth
 - Install the OS in headless mode following [Tom's Hardware Guide](https://www.tomshardware.com/reviews/raspberry-pi-headless-setup-how-to,6028.html)
 - Install [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver) with the USB audio card already plugged in. Spotify and AirPlay should work immediately, bluetooth could need a restart. 
 - Install this repo's contents (below)
+- See if radio works by doing `mpc add https://stream.radioluz.pl:8443/luz_hifi.mp3` and `mpc play`. If it's not working, you might need to set it up. Links that could help: [1](https://www.rohberg.ch/de/blog/radio-streaming-with-a-raspberry-pi), [2](https://www.lesbonscomptes.com/pages/raspmpd.html). 
 
 ## Installation
 
 ```bash
-# Get non-python dependencies
-sudo apt install curl virtualenv espeak mpc
-# Install Raspotify
-curl -sL https://dtcooper.github.io/raspotify/install.sh | sh
-# Install the Python dependencies in a virtualenv
+# Install apt dependencies and then Python dependencies in a virtualenv
 make dependencies
 # Install the systemd service
 make install
