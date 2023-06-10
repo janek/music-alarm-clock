@@ -21,6 +21,7 @@ API_VERSION = "v1"
 SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
+READ_ERRORS_OUT_LOUD = cfg.get_read_errors_out_loud()
 
 RADIO_LUZ_STREAM_URL = "https://stream.radioluz.pl:8443/luzlofi.ogg"
 
@@ -194,7 +195,8 @@ def handle_and_return_possible_error_message_in_api_response(response):
         elif "message" in response_data["error"]:
             error_message = response_data["error"]["message"] 
         app.logger.info(error_message)
-        say("Error: " + error_message)
+        if READ_ERRORS_OUT_LOUD:
+            say("Error: " + error_message)
         return error_message
 
 def access_token_from_file():

@@ -16,6 +16,9 @@ def read_config_file():
 
 CONFIG = read_config_file()
 
+def get_read_errors_out_loud():
+    read_erors_out_loud = CONFIG["OTHER"]["READ_ERRORS_OUT_LOUD"]
+    return (read_erors_out_loud == "True" or read_erors_out_loud == "true" or read_erors_out_loud == True)
 
 def get_spotify_client_id():
     client_id = CONFIG["SPOTIFY"]["CLIENT_ID"]
