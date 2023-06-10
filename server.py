@@ -121,7 +121,6 @@ def spotiplay():
     response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
-
 def play(spotify_uri=None, song_number=0): 
     global currently_playing
     data = ''
@@ -140,14 +139,12 @@ def play(spotify_uri=None, song_number=0):
             
     return response
 
-
 def pause():
     global currently_playing
     response = spotify_request("pause")
     if response.ok:
         currently_playing = False
     return response
-
 
 def playpause():
     global currently_playing
@@ -208,6 +205,11 @@ def access_token_from_file():
 
 def say(something):
     run(["espeak", something], stdout=subprocess.DEVNULL)
+
+@app.route("/stop")
+def stop():
+    radiostop()
+    spotipause()
 
 @app.route("/radioplay")
 def radioplay():
