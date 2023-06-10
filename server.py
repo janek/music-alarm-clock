@@ -210,6 +210,7 @@ def say(something):
 def stop():
     radiostop()
     spotipause()
+    return "Playback stopped"
 
 @app.route("/radioplay")
 def radioplay():
