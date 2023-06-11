@@ -128,6 +128,7 @@ def spotipause():
 @app.route("/spotiplay")
 def spotiplay():
     app.logger.info('Playing spotify')
+    radiostop()
     response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
