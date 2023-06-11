@@ -112,15 +112,22 @@ def login():
     login_url = SPOTIFY_AUTH_URL + '?response_type=code' + '&client_id=' + cfg.get_spotify_client_id() + '&scope=' + parse.quote(scopes) + '&redirect_uri=' + parse.quote(SPOTIFY_REDIRECT_URI)
     return redirect(login_url, code=302)
 
+@app.route("/spotialarm")
+def spotialarm():
+   app.logger.info('Starting spotify alarm') 
+   start_fading_volume_in_thread()
+   spotiplay()
 
 @app.route("/spotipause")
 def spotipause():
+    app.logger.info('Pausing spotify')
     response = pause()
     return "Pause request sent to Spotify. Response: " + str(response.status_code) + " " + response.text
 
 
 @app.route("/spotiplay")
 def spotiplay():
+    app.logger.info('Playing spotify')
     response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
@@ -233,6 +240,12 @@ def radioplay():
     run(["mpc", "play"])
     return "Radio started"
 
+@app.route("/radioalarm")
+def radioalarm():
+    app.logger.info('Starting radio alarm')
+    start_fading_volume_in_thread()
+    radioplay()
+
 @app.route("/radiostop")
 def radiostop():
     app.logger.info('Stopping radio')
@@ -257,9 +270,9 @@ def cronsave():
     hours = request.json['hours']
     music_mode = request.json['mode']
     if music_mode == "luz":
-        command = "curl " + THIS_SERVER_ADDRESS + "/radioplay"
+        command = "curl " + THIS_SERVER_ADDRESS + "/radioalarm"
     else:
-        command = "curl " + THIS_SERVER_ADDRESS + "/request_spotify_authorization && curl " + THIS_SERVER_ADDRESS + "/spotiplay"
+        command = "curl " + THIS_SERVER_ADDRESS + "/spotialarm"
     cron_raspi = CronTab(user=SYSTEM_USER)
     cron_raspi.remove_all(comment=ALARM_ANNOTATION_TAG)
     job = cron_raspi.new(command=command, comment=ALARM_ANNOTATION_TAG)
