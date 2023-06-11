@@ -1,4 +1,5 @@
 import json
+import time
 from flask import Flask, request, redirect, url_for, Response
 from urllib import parse
 import requests
@@ -154,10 +155,15 @@ def playpause():
     else:
         play()
 
+def fade_volume(goal_volume=100, fade_duration_mins=1):
+    fade_duration_secs = fade_duration_mins * 60
+    sleep_time = fade_duration_secs / goal_volume
+    for i in range(0, goal_volume):
+        set_volume(i)
+        time.sleep(sleep_time)
+
 def set_volume(new_volume):
-    url_params = {"volume_percent":str((new_volume+1)*10)}
-    response = spotify_request("volume", url_params=url_params)
-    return response
+    run(["amixer", "set", "Master", str(new_volume) + "%"])
 
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}, retries_attempted=0):
     app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
