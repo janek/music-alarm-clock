@@ -1,5 +1,6 @@
 import json
 import time
+import threading
 from flask import Flask, request, redirect, url_for, Response
 from urllib import parse
 import requests
@@ -155,7 +156,13 @@ def playpause():
     else:
         play()
 
+def start_fading_volume_in_thread(goal_volume=100, fade_duration_mins=1):
+    # start fade_volume in a new thread
+    fade_thread = threading.Thread(target=fade_volume, args=(goal_volume, fade_duration_mins))
+    fade_thread.start()
+
 def fade_volume(goal_volume=100, fade_duration_mins=1):
+    set_volume(0)
     fade_duration_secs = fade_duration_mins * 60
     sleep_time = fade_duration_secs / goal_volume
     for i in range(0, goal_volume):
