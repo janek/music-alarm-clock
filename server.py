@@ -182,7 +182,7 @@ def fade_volume(goal_volume=70, fade_duration_mins=1):
 def volume():
     new_volume = request.args.get('volume')
     set_volume(new_volume)
-    return "Volume set to " + new_volume
+    return "Volume set to " + str(new_volume)
 
 def set_volume(new_volume):
     run(["amixer", "set", "Master", str(new_volume) + "%"])
