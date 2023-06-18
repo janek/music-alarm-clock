@@ -24,6 +24,9 @@ install:
 	# Enable the service to start system boot (I hope)
 	systemctl --user enable spotify-alarm-clock
 
+restart:
+	systemctl --user restart spotify-alarm-clock
+
 dev:
 	sudo -E ./virtualenv/bin/python keyboard_control.py
 
