@@ -170,7 +170,7 @@ def start_fading_volume_in_thread(goal_volume=100, fade_duration_mins=1):
     fade_thread = threading.Thread(target=fade_volume, args=(goal_volume, fade_duration_mins))
     fade_thread.start()
 
-def fade_volume(goal_volume=100, fade_duration_mins=1):
+def fade_volume(goal_volume=70, fade_duration_mins=1):
     set_volume(0)
     fade_duration_secs = fade_duration_mins * 60
     sleep_time = fade_duration_secs / goal_volume
