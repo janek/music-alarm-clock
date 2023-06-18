@@ -117,6 +117,7 @@ def spotialarm():
    app.logger.info('Starting spotify alarm') 
    start_fading_volume_in_thread()
    spotiplay()
+   return "Spotify alarm started"
 
 @app.route("/spotipause")
 def spotipause():
@@ -246,6 +247,7 @@ def radioalarm():
     app.logger.info('Starting radio alarm')
     start_fading_volume_in_thread()
     radioplay()
+    return "Radio alarm started"
 
 @app.route("/radiostop")
 def radiostop():
