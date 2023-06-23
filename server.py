@@ -12,6 +12,7 @@ import config_reader as cfg
 import os
 import socket
 import logging
+import random
 # from playlists import playlists #TODO
 
 app = Flask(__name__)
@@ -25,6 +26,10 @@ SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
 READ_ERRORS_OUT_LOUD = cfg.get_read_errors_out_loud()
+
+playlist_id = '7jirtU9sm2aEe5DYK8n6Id' # Dave/Easy Wakeup
+#playlist_id = '5crU6AclXGahkiVpvIcbZQ' # Janek/raspi-alarm-clock
+
 
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -129,8 +134,28 @@ def spotipause():
 def spotiplay():
     app.logger.info('Playing spotify')
     radiostop()
-    response = play(spotify_uri="spotify:playlist:5crU6AclXGahkiVpvIcbZQ")
+    
+    response = play_random(spotify_uri="spotify:playlist:" + playlist_id)
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
+
+def play_random(spotify_uri=None): 
+    import spotipy
+    from spotipy.oauth2 import SpotifyClientCredentials
+
+    # set up Spotify API credentials
+    client_id = cfg.get_spotify_client_id()
+    client_secret = cfg.get_spotify_client_secret()
+    client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
+    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+
+    # get number of tracks in playlist
+    playlist = sp.playlist(playlist_id)
+    num_tracks = playlist['tracks']['total']
+    app.logger.info("Playing from: " + playlist['name'] )
+
+    # call play with random track number
+    random_track_number = random.randint(0, num_tracks)
+    play(spotify_uri=spotify_uri, song_number=random_track_number)
 
 def play(spotify_uri=None, song_number=0): 
     global currently_playing
