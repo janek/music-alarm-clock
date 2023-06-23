@@ -12,6 +12,11 @@ Warning: WIP: the README is lacking and the setup is not smooth
 ## Installation
 
 ```bash
+# At the moment this path is ~/Developer/spotify-alarm-clock is hardcoded somewhere, so it's easiest to use it until that's fixed
+mkdir ~/Developer
+git clone https://github.com/janek/spotify-alarm-clock/
+cd ~/Developer/
+
 # Install apt dependencies and then Python dependencies in a virtualenv
 make dependencies
 # Install the systemd service
