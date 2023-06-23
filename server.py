@@ -26,8 +26,6 @@ SPOTIFY_PLAYER_URL = SPOTIFY_API_URL+"/me/player"
 SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
 READ_ERRORS_OUT_LOUD = cfg.get_read_errors_out_loud()
 
-RADIO_LUZ_STREAM_URL = "https://stream.radioluz.pl:8443/luzlofi.ogg"
-
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -282,7 +280,7 @@ def cronsave():
     minutes = request.json['minutes']
     hours = request.json['hours']
     music_mode = request.json['mode']
-    if music_mode == "luz":
+    if music_mode == "luz" or music_mode == "radio":
         command = "curl " + THIS_SERVER_ADDRESS + "/radioalarm"
     else:
         command = "curl " + THIS_SERVER_ADDRESS + "/spotialarm"
