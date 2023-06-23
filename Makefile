@@ -10,8 +10,7 @@ install-audio-receiver:
 	unzip main.zip
 	rm main.zip
 	
-	cd rpi-audio-receiver-main
-	sudo ./install.sh
+	cd rpi-audio-receiver-main;	sudo ./install.sh
 
 dependencies: install-audio-receiver
 	sudo apt install curl virtualenv espeak mpc mpd
