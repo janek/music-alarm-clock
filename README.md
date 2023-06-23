@@ -44,7 +44,7 @@ The server is managed via a systemd service. Here's a quick cheatsheet:
 ## Spotify authorization
 - Create an app on Spotify
 - Get the local IP of your raspberry pi, for example `192.168.0.38`
-- Make sure `http://192.168.0.38:3141/authorize_spotify` is whitelisted on your [Spotify dashboard](https://developer.spotify.com/dashboard/) (substituting 192.168.0.38 for your raspberry pi's IP)
+- Make sure `http://192.168.0.38:3141/authorize_spotify` is included in "Redirect URIs" on your [Spotify dashboard](https://developer.spotify.com/dashboard/) (substituting 192.168.0.38 for your raspberry pi's IP)
 - Go to `http://192.168.0.38:3141/login` (substituting 192.168.0.38 for your raspberry pi's IP)
 
 
