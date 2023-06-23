@@ -12,6 +12,10 @@ import config_reader as cfg
 import os
 import socket
 import logging
+
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+
 import random
 # from playlists import playlists #TODO
 
@@ -79,6 +83,7 @@ def request_spotify_authorization(code=None):
 
     client_id = cfg.get_spotify_client_id()
     client_secret = cfg.get_spotify_client_secret()
+    
     auth_str = '{}:{}'.format(client_id, client_secret)
     b64_auth_str = base64.urlsafe_b64encode(auth_str.encode()).decode()
     headers = {"Authorization": "Basic {}".format(b64_auth_str)}
@@ -134,13 +139,12 @@ def spotipause():
 def spotiplay():
     app.logger.info('Playing spotify')
     radiostop()
-    
+        
     response = play_random(spotify_uri="spotify:playlist:" + playlist_id)
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
+#Todo use spotipy to set spotify playback to shuffle 
 def play_random(spotify_uri=None): 
-    import spotipy
-    from spotipy.oauth2 import SpotifyClientCredentials
 
     # set up Spotify API credentials
     client_id = cfg.get_spotify_client_id()
@@ -155,7 +159,7 @@ def play_random(spotify_uri=None):
 
     # call play with random track number
     random_track_number = random.randint(0, num_tracks)
-    play(spotify_uri=spotify_uri, song_number=random_track_number)
+    return play(spotify_uri=spotify_uri, song_number=random_track_number)
 
 def play(spotify_uri=None, song_number=0): 
     global currently_playing
