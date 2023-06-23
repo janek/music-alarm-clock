@@ -19,8 +19,13 @@ cd ~/Developer/
 
 # Install apt dependencies and then Python dependencies in a virtualenv
 make dependencies
+
 # Install the systemd service
 make install
+
+# Configure
+cp config.sample.ini config.ini 
+
 ```
 
 ## Systemd service
