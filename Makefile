@@ -9,9 +9,7 @@ install-audio-receiver:
 	wget -q https://github.com/nicokaiser/rpi-audio-receiver/archive/main.zip
 	unzip main.zip
 	rm main.zip
-	
-	cd rpi-audio-receiver-main
-	sudo ./install.sh
+	sudo ./rpi-audio-receiver-main/install.sh
 
 dependencies: install-audio-receiver
 	sudo apt install curl virtualenv espeak mpc mpd
