@@ -11,6 +11,7 @@ from crontab import CronTab
 import config_reader as cfg
 import os
 import socket
+import logging
 # from playlists import playlists #TODO
 
 app = Flask(__name__)
@@ -195,10 +196,13 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
         url_params["device_id"] = SPOTIFY_DEVICE_ID
     url = SPOTIFY_PLAYER_URL + "/" + endpoint
     headers = {'Authorization': 'Bearer {}'.format(token)} 
+
     if http_method == "PUT":
         response = requests.put(url, data=data, headers=headers, params=url_params)
     elif http_method == "GET":
         response = requests.get(url, data=data, headers=headers, params=url_params)
+
+    app.logger.debug("Request to " + str(url) + " \n Response = " + str(response.status_code) + " " + response.text)
 
     if response.status_code == 401:
         # If the access token is expired, get a new one and retry
@@ -288,6 +292,7 @@ def cronsave():
     job.minute.on(minutes)
     job.hour.on(hours)
     cron_raspi.write()
+    app.logger.info("Alarm set to " + str(hours) + ":" + str(minutes))
     return "Alarm saved!"
 
 @app.route('/devices', methods=['GET'])
@@ -309,4 +314,7 @@ def areyourunning():
     return message
 
 if __name__ == '__main__':
+    app.logger.setLevel(logging.INFO)
+    # TODO eventually deploy ?!
     app.run(debug=True, port=PORT, host='0.0.0.0')
+
