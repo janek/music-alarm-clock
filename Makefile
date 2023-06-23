@@ -15,6 +15,7 @@ dependencies: install-audio-receiver
 	sudo apt install curl virtualenv espeak mpc mpd
 	virtualenv -p /usr/bin/python3 virtualenv
 	./virtualenv/bin/pip install --upgrade -r requirements.txt
+	echo "Reboot is recommended now"
 
 install:
 	# Install the systemd service...
@@ -26,7 +27,6 @@ install:
 	systemctl --user daemon-reload
 	# Enable the service to start system boot (I hope)
 	systemctl --user enable spotify-alarm-clock
-	echo "Reboot is recommended now"
 
 restart:
 	systemctl --user restart spotify-alarm-clock
