@@ -2,15 +2,12 @@ all:
 	@echo Usage:
 	@echo make dependencies
 	@echo make install
-	@echo make virtualenv
-
-virtualenv:
-	# NB: If something is not quite right with the virtual environment then
-	# just remove it and create it again with "make virtualenv".
-	virtualenv -p /usr/bin/python3 virtualenv
+	@echo make restart
+	@echo make keyboard-dev
 
 dependencies: virtualenv
 	sudo apt install curl virtualenv espeak mpc mpd
+	virtualenv -p /usr/bin/python3 virtualenv
 	./virtualenv/bin/pip install --upgrade -r requirements.txt
 
 install:
@@ -27,7 +24,7 @@ install:
 restart:
 	systemctl --user restart spotify-alarm-clock
 
-dev:
+keyboard-dev:
 	sudo -E ./virtualenv/bin/python keyboard_control.py
 
 test:
