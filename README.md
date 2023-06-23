@@ -28,6 +28,9 @@ cp config.sample.ini config.ini
 
 ```
 
+## Running 
+`curl <your_pi_ip_address>:3141/areyourunning` or go to `http://<your_pi_ip_address_or_hostname>:3141/areyourunning` in your browser
+
 ## Systemd service
 
 The server is managed via a systemd service. Here's a quick cheatsheet:
