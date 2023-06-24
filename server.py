@@ -57,7 +57,7 @@ SYSTEM_USER = os.environ.get('USER')
 SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
-
+fade_minutes = 1
 
 
 # TODO: In context of /login, maybe rename to refresh auth
@@ -124,7 +124,8 @@ def login():
 @app.route("/spotialarm")
 def spotialarm():
    app.logger.info('Starting spotify alarm') 
-   start_fading_volume_in_thread()
+   global fade_minutes
+   start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=fade_minutes)
    spotiplay()
    return "Spotify alarm started"
 
@@ -134,12 +135,10 @@ def spotipause():
     response = pause()
     return "Pause request sent to Spotify. Response: " + str(response.status_code) + " " + response.text
 
-
 @app.route("/spotiplay")
 def spotiplay():
     app.logger.info('Playing spotify')
     radiostop()
-        
     response = play_random(spotify_uri="spotify:playlist:" + playlist_id)
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
@@ -155,10 +154,10 @@ def play_random(spotify_uri=None):
     # get number of tracks in playlist
     playlist = sp.playlist(playlist_id)
     num_tracks = playlist['tracks']['total']
-    app.logger.info("Playing from: " + playlist['name'] )
 
     # call play with random track number
     random_track_number = random.randint(0, num_tracks)
+    app.logger.info("Playing #" + str(random_track_number) + " from: " + playlist['name'] )
     return play(spotify_uri=spotify_uri, song_number=random_track_number)
 
 def play(spotify_uri=None, song_number=0): 
@@ -193,7 +192,7 @@ def playpause():
     else:
         play()
 
-def start_fading_volume_in_thread(goal_volume=100, fade_duration_mins=1):
+def start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=1):
     # start fade_volume in a new thread
     fade_thread = threading.Thread(target=fade_volume, args=(goal_volume, fade_duration_mins))
     fade_thread.start()
@@ -306,9 +305,14 @@ def radioprev():
 
 @app.route('/cronsave', methods=['POST'])
 def cronsave():
+    global fade_minutes
     minutes = request.json['minutes']
     hours = request.json['hours']
     music_mode = request.json['mode']
+
+    if 'fade_minutes' in request.json:
+        fade_minutes = request.json['fade_minutes']
+
     if music_mode == "luz" or music_mode == "radio":
         command = "curl " + THIS_SERVER_ADDRESS + "/radioalarm"
     else:
