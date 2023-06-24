@@ -8,3 +8,7 @@ keyboard
 
 # Development
 pytest
+
+# new features
+spotipy
+telebot
