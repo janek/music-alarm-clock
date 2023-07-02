@@ -417,6 +417,10 @@ def areyourunning():
 
 if __name__ == '__main__':
     app.logger.setLevel(logging.INFO)
+    app.logger.info("Starting \n\n \n\n server.py -> __main__ \n \n ")
+    
+    if SYSTEM_USER == None:
+        SYSTEM_USER = 'pi'
 
     # retrieve alarm_time from crontab
     cron = CronTab(user=SYSTEM_USER)
