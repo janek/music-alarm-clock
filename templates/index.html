@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alarm Clock</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+        }
+        p {
+            line-height: 20px;
+            height: 2em;
+            display: table-cell;
+            vertical-align: middle;
+            padding: 10px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="number"] {
+            width: 35px;
+            padding: 5px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            text-align: center;
+            color: #333;
+        }
+        input[type="submit"] {
+            background-color: #0078d7;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #005a9e;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .toggle-switch {
+            display: inline-block;
+            position: relative;
+            width: 60px;
+            height: 24px;
+            margin-left: 10px;
+        }
+        .toggle-switch input[type="checkbox"] {
+            display: none;
+        }
+        .toggle-switch label {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            background-color: #ccc;
+            cursor: pointer;
+        }
+        .toggle-switch label:after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 20px;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+        .toggle-switch input[type="checkbox"]:checked + label {
+            background-color: #0078d7;
+        }
+        .toggle-switch input[type="checkbox"]:checked + label:after {
+            transform: translateX(36px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Music Alarm Clock</h1>
+        <p><span class="toggle-switch">
+            <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif %}>
+            <label for="alarm-active"></label>
+        </span>
+        <p>
+        Currently: {{ alarm_time.strftime('%I:%M %p') }}
+        </p>
+        
+        </p>
+        
+        <form method="POST" action="/set_alarm">
+            <input type="submit" value="Change to">
+            <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.hour  }}" placeholder="Hour">
+            :
+            <input type="number" name="minute" min="0" max="59" value="{{ alarm_time.minute }}" placeholder="Minute">
+            
+        </form>
+<!--
+        <script>
+            // Get the current time
+            var now = new Date();
+            var hour = (now.getHours() + 8 ) % 24 // propose 8 hours from now
+            var minute = now.getMinutes();
+
+            // Set the value of the input fields
+            document.getElementsByName('hour')[0].value = hour;
+            document.getElementsByName('minute')[0].value = minute;
+        </script>
+-->
+
+        {% if success %}
+            <p class="success-message">Alarm set successfully!</p>
+        {% endif %}
+
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        const alarmActiveCheckbox = document.getElementById('alarm-active');
+
+        alarmActiveCheckbox.addEventListener('change', () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/set_alarm_active');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({ alarm_active: alarmActiveCheckbox.checked }));
+        });
+    </script>
+</body>
+</html>

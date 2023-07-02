@@ -59,6 +59,51 @@ ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
 fade_minutes = 1
 
+from flask import render_template
+import datetime
+
+# set up initial alarm time
+alarm_time = datetime.time(hour=8, minute=0)
+alarm_active = False
+
+def render():
+    return render_template('index.html', alarm_time=alarm_time, alarm_active=alarm_active)
+
+# define routes
+@app.route('/')
+def index():
+    return render()
+
+@app.route('/set_alarm_active', methods=['POST'])
+def set_alarm_active():
+    global alarm_active
+    global alarm_time
+    alarm_active = request.json['alarm_active']
+    
+    if not alarm_active:
+        cronclean()
+    else:
+        save_alarm(alarm_time.hour, alarm_time.minute)
+
+    return render()
+
+@app.route('/set_alarm', methods=['POST'])
+def set_alarm():
+    global alarm_active
+
+    alarm_active = True
+
+    global alarm_time
+    hour = int(request.form['hour'])
+    minute = int(request.form['minute'])
+    # print alarm
+    print("Alarm set to " + str(hour) + ":" + str(minute))
+    
+    alarm_time = datetime.time(hour=hour, minute=minute)
+
+    save_alarm(hour, minute)
+
+    return render()
 
 # TODO: In context of /login, maybe rename to refresh auth
 @app.route("/request_spotify_authorization")
@@ -126,9 +171,13 @@ def spotialarm():
    app.logger.info('Starting spotify alarm') 
    global fade_minutes
    start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=fade_minutes)
-   spotiplay()
-   return "Spotify alarm started"
-
+   try:
+        spotiplay()
+        return "Spotify alarm started"
+   except:
+       print('spotiplay() did not work...' )
+       return radioalarm()
+       
 @app.route("/spotipause")
 def spotipause():
     app.logger.info('Pausing spotify')
@@ -228,7 +277,7 @@ def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False,
     elif http_method == "GET":
         response = requests.get(url, data=data, headers=headers, params=url_params)
 
-    app.logger.debug("Request to " + str(url) + " \n Response = " + str(response.status_code) + " " + response.text)
+    app.logger.info("Request to " + str(url) + " \n Response = " + str(response.status_code) + " " + response.text)
 
     if response.status_code == 401:
         # If the access token is expired, get a new one and retry
@@ -306,12 +355,24 @@ def radioprev():
 @app.route('/cronsave', methods=['POST'])
 def cronsave():
     global fade_minutes
-    minutes = request.json['minutes']
-    hours = request.json['hours']
-    music_mode = request.json['mode']
 
     if 'fade_minutes' in request.json:
         fade_minutes = request.json['fade_minutes']
+
+    success = save_alarm(request.json['hours'],
+                         request.json['minutes'],
+                         music_mode=request.json['mode'])
+    
+    return "Alarm saved" if success else "Alarm not saved"
+
+@app.route('/cronclean', methods=['GET'])
+def cronclean():
+    cron_raspi = CronTab(user=SYSTEM_USER)
+    cron_raspi.remove_all(comment=ALARM_ANNOTATION_TAG)
+    cron_raspi.write()
+    return "All alarms cleared."
+
+def save_alarm(hours, minutes, music_mode='radio'):
 
     if music_mode == "luz" or music_mode == "radio":
         command = "curl " + THIS_SERVER_ADDRESS + "/radioalarm"
@@ -324,19 +385,14 @@ def cronsave():
     job.hour.on(hours)
     cron_raspi.write()
     app.logger.info("Alarm set to " + str(hours) + ":" + str(minutes))
-    return "Alarm saved!"
+    return True
+
 
 @app.route('/devices', methods=['GET'])
 def devices():
     response = spotify_request("devices", http_method="GET")
     return response.text
 
-@app.route('/cronclean', methods=['GET'])
-def cronclean():
-    cron_raspi = CronTab(user=SYSTEM_USER)
-    cron_raspi.remove_all(comment=ALARM_ANNOTATION_TAG)
-    cron_raspi.write()
-    return "All alarms cleared."
 
 @app.route('/areyourunning', methods=['GET'])
 def areyourunning():
@@ -346,6 +402,20 @@ def areyourunning():
 
 if __name__ == '__main__':
     app.logger.setLevel(logging.INFO)
+
+    # retrieve alarm_time from crontab
+    cron = CronTab(user=SYSTEM_USER)
+
+    for job in cron.find_comment(ALARM_ANNOTATION_TAG):
+        try:
+            hour, minute = job.hour.parts[0], job.minute.parts[0]
+            alarm_time = datetime.time(hour=hour, minute=minute)
+            app.logger.info("Found alarm in crontab: " + str(alarm_time))
+            alarm_active = True
+        except:
+            app.logger.info("No alarm in crontab!")
+            alarm_active = False
+
     # TODO eventually deploy ?!
     app.run(debug=True, port=PORT, host='0.0.0.0')
 
