@@ -166,11 +166,26 @@ def login():
     login_url = SPOTIFY_AUTH_URL + '?response_type=code' + '&client_id=' + cfg.get_spotify_client_id() + '&scope=' + parse.quote(scopes) + '&redirect_uri=' + parse.quote(SPOTIFY_REDIRECT_URI)
     return redirect(login_url, code=302)
 
+def homeassistant_triggerWebhook(webhook_name):
+    url = "http://" + HOSTNAME + ":" + str(8123) + "/api/webhook/" + webhook_name
+    response = requests.get(url)
+    if response.status_code == 405:
+        result = 'Triggered Webhook'   
+        response = requests.put(url) 
+    else :
+        result = 'Did not find Webhook (create an automation in homeassistant first)'  
+    
+    result = result + ': ' + url
+
+    logging.info(result)
+    return result
+
 @app.route("/spotialarm")
 def spotialarm():
    app.logger.info('Starting spotify alarm') 
    global fade_minutes
    start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=fade_minutes)
+   return homeassistant_triggerWebhook('wakeup_alarm_triggered')
    try:
         spotiplay()
         return "Spotify alarm started"
