@@ -8,3 +8,6 @@ keyboard
 
 # Development
 pytest
+
+# more spotify control
+spotipy
