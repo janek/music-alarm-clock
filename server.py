@@ -57,7 +57,7 @@ SYSTEM_USER = os.environ.get('USER')
 SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
-fade_minutes = 1
+fade_minutes = 2
 
 from flask import render_template
 import datetime
@@ -185,9 +185,10 @@ def spotialarm():
    app.logger.info('Starting spotify alarm') 
    global fade_minutes
    start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=fade_minutes)
-   return homeassistant_triggerWebhook('wakeup_alarm_triggered')
+
    try:
         spotiplay()
+        homeassistant_triggerWebhook('wakeup_alarm_triggered')
         return "Spotify alarm started"
    except:
        print('spotiplay() did not work...' )
@@ -256,7 +257,7 @@ def playpause():
     else:
         play()
 
-def start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=1):
+def start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=1.0):
     # start fade_volume in a new thread
     fade_thread = threading.Thread(target=fade_volume, args=(goal_volume, fade_duration_mins))
     fade_thread.start()
@@ -345,8 +346,9 @@ def radioplay():
 @app.route("/radioalarm")
 def radioalarm():
     app.logger.info('Starting radio alarm')
-    start_fading_volume_in_thread()
+    start_fading_volume_in_thread(fade_duration_mins=fade_minutes)
     radioplay()
+    homeassistant_triggerWebhook('wakeup_alarm_triggered')
     return "Radio alarm started"
 
 @app.route("/radiostop")
@@ -435,6 +437,7 @@ if __name__ == '__main__':
             app.logger.info("No alarm in crontab!")
             alarm_active = False
 
+    #radioalarm()
     # TODO eventually deploy ?!
     app.run(debug=True, port=PORT, host='0.0.0.0')
 
