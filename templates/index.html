@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Alarm Clock</title>
     <style>
@@ -7,11 +8,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f2f2f2;
         }
-        h1 {
+        
+        h2 {
             color: #333;
             text-align: center;
-            margin-top: 50px;
+            margin : 5px;
         }
+
         p {
             line-height: 20px;
             height: 2em;
@@ -19,20 +22,31 @@
             vertical-align: middle;
             padding: 10px;
         }
+
         .container {
+            text-align: center;
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
+        .current {
+            align: center;
+        }
+        .change {
+            align: center;
+            padding: 10px;
+        }
+
         label {
             display: block;
             margin-bottom: 10px;
             font-weight: bold;
             color: #333;
         }
+
         input[type="number"] {
             width: 35px;
             padding: 5px;
@@ -42,6 +56,7 @@
             text-align: center;
             color: #333;
         }
+
         input[type="submit"] {
             background-color: #0078d7;
             color: #fff;
@@ -51,17 +66,21 @@
             cursor: pointer;
             font-size: 16px;
         }
+
         input[type="submit"]:hover {
             background-color: #005a9e;
         }
+
         .success-message {
             color: green;
             margin-top: 10px;
         }
+
         .error-message {
             color: red;
             margin-top: 10px;
         }
+
         .toggle-switch {
             display: inline-block;
             position: relative;
@@ -69,9 +88,11 @@
             height: 24px;
             margin-left: 10px;
         }
+
         .toggle-switch input[type="checkbox"] {
             display: none;
         }
+
         .toggle-switch label {
             display: block;
             position: absolute;
@@ -83,6 +104,7 @@
             background-color: #ccc;
             cursor: pointer;
         }
+
         .toggle-switch label:after {
             content: "";
             display: block;
@@ -95,35 +117,91 @@
             background-color: #fff;
             transition: all 0.3s;
         }
-        .toggle-switch input[type="checkbox"]:checked + label {
+
+        .toggle-switch input[type="checkbox"]:checked+label {
             background-color: #0078d7;
         }
-        .toggle-switch input[type="checkbox"]:checked + label:after {
+
+        .toggle-switch input[type="checkbox"]:checked+label:after {
             transform: translateX(36px);
-        }
+        }.slider {
+    width: 600px;
+    height: 20px;
+    -webkit-appearance: none;
+    background-color: #ddd;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    border-radius: 20px;
+}
+.slider {
+    width: 300px;
+    height: 20px;
+    -webkit-appearance: none;
+    background-color: #ddd;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    border-radius: 10px;
+    margin: 20px;
+    padding: 2px;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 40px;
+    background-color: #0078d7;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 40px;
+    background-color: #0078d7;
+    cursor: pointer;
+    border-radius: 50%;
+}
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Music Alarm Clock</h1>
-        <p><span class="toggle-switch">
-            <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif %}>
-            <label for="alarm-active"></label>
-        </span>
+        <h2>Alarm Clock</h2>
+        <span class="current" >
+        <p >
+            <span class="toggle-switch">
+                <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif %}>
+                <label for="alarm-active"></label>
+            </span>
         <p>
-        Currently: {{ alarm_time.strftime('%I:%M %p') }}
+            Currently: {{alarm_time.strftime('%H:%M')}}
         </p>
-        
         </p>
-        
-        <form method="POST" action="/set_alarm">
+    </span>
+
+        <form class="change" method="POST" action="/set_alarm">
             <input type="submit" value="Change to">
             <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.hour  }}" placeholder="Hour">
             :
             <input type="number" name="minute" min="0" max="59" value="{{ alarm_time.minute }}" placeholder="Minute">
-            
+
         </form>
-<!--
+
+
+        <div class="slider-container">
+            <input type="range" class="slider" min="0" max="100" value="50">
+        </div>
+
+        <!--
         <script>
             // Get the current time
             var now = new Date();
@@ -137,11 +215,11 @@
 -->
 
         {% if success %}
-            <p class="success-message">Alarm set successfully!</p>
+        <p class="success-message">Alarm set successfully!</p>
         {% endif %}
 
         {% if error %}
-            <p class="error-message">{{ error }}</p>
+        <p class="error-message">{{ error }}</p>
         {% endif %}
     </div>
 
@@ -155,5 +233,24 @@
             xhr.send(JSON.stringify({ alarm_active: alarmActiveCheckbox.checked }));
         });
     </script>
+
+
+    <script>
+        // Get the volume button and slider
+        var volumeSlider = document.querySelector('.slider');
+
+        // Add an event listener to the volume slider
+        volumeSlider.addEventListener('input', function () {
+            // Get the current volume from the slider
+            var volume = volumeSlider.value;
+
+            // Send a request to the /volume webhook with the volume parameter
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/volume?volume=' + volume);
+            xhr.send();
+        });
+    </script>
+
 </body>
+
 </html>
