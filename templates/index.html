@@ -198,7 +198,9 @@
 
 
         <div class="slider-container">
-            <input type="range" class="slider" min="0" max="100" value="50">
+            <input type="range" class="slider" id="volume" min="0" max="100" step="0.1" value="50">
+            <label for="balance">Balance:</label>
+            <input type="range" class="slider" id="balance" name="balance" min="-1" max="1" step="0.01" value="0">
         </div>
 
         <!--
@@ -234,21 +236,25 @@
         });
     </script>
 
-
     <script>
-        // Get the volume button and slider
-        var volumeSlider = document.querySelector('.slider');
+        function handleSliderChange() {
+            // Get the current volume and balance from the sliders
+            const volume = document.getElementById("volume").value;
+            const balance = document.getElementById("balance").value;
 
-        // Add an event listener to the volume slider
-        volumeSlider.addEventListener('input', function () {
-            // Get the current volume from the slider
-            var volume = volumeSlider.value;
-
-            // Send a request to the /volume webhook with the volume parameter
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/volume?volume=' + volume);
+            // Send a request to the /volume webhook with the volume and balance parameters
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/volume?volume=${volume}&balance=${balance}`);
             xhr.send();
-        });
+        }
+
+        // Get the volume and balance sliders
+        const volumeSlider = document.getElementById("volume");
+        const balanceSlider = document.getElementById("balance");
+
+        // Attach the handleSliderChange function to both sliders
+        volumeSlider.addEventListener("input", handleSliderChange);
+        balanceSlider.addEventListener("input", handleSliderChange);
     </script>
 
 </body>

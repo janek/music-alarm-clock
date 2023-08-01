@@ -13,6 +13,8 @@ import os
 import socket
 import logging
 
+import math
+
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -274,10 +276,39 @@ def fade_volume(goal_volume=70, fade_duration_mins=1):
 def volume():
     new_volume = request.args.get('volume')
     set_volume(new_volume)
+
+    b = request.args.get('balance')
+    if b is not None:
+        set_balance(float(b))
+
     return "Volume set to " + str(new_volume) if new_volume is not None else "Volume not set"
+
 
 def set_volume(new_volume):
     run(["amixer", "set", "Master", str(new_volume) + "%"])
+    app.logger.info("Volume set to " + str(new_volume) + "%")
+
+def set_balance(balance):
+    # balance is a float ranging from -1 (full left) to 1 (full right)
+
+    # clamp balance to range [-1, 1] to avoid errors
+    balance = max(min(balance, 1), -1)
+
+    # calculate left and right channel volumes
+    # the 'sqrt' function ensures power (not amplitude) balance
+    left = math.sqrt((balance - 1) / -2) * 100
+    right = math.sqrt((balance + 1) / 2) * 100
+
+    # convert to percentages and make sure volumes are within [0, 100]
+    left = min(max(left, 0), 100)
+    right = min(max(right, 0), 100)
+
+    # set volumes
+    command = f"amixer sset 'Master' {left}%,{right}%"
+    app.logger.info(f"command is: ____________ {command}")
+    os.system(command)
+    app.logger.info(f"Balance set to {balance} =>({left}% left, {right}% right)")
+
 
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}, retries_attempted=0):
     app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
