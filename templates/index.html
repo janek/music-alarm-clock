@@ -6,13 +6,14 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f2f2f2;
+            background-color: #111;
+            color: #ddd;
         }
-        
+
         h2 {
-            color: #333;
+            color: #ddd;
             text-align: center;
-            margin : 5px;
+            margin: 5px;
         }
 
         p {
@@ -28,13 +29,15 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 10px;
-            background-color: #fff;
+            background-color: #222;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
+
         .current {
             align: center;
         }
+
         .change {
             align: center;
             padding: 10px;
@@ -44,7 +47,7 @@
             display: block;
             margin-bottom: 10px;
             font-weight: bold;
-            color: #333;
+            color: #ddd;
         }
 
         input[type="number"] {
@@ -54,13 +57,14 @@
             border: 1px solid #ccc;
             font-size: 16px;
             text-align: center;
-            color: #333;
+            color: #ddd;
+            background-color: #222;
         }
 
         input[type="submit"] {
-            background-color: #0078d7;
-            color: #fff;
-            border: none;
+            background-color: #444;
+            color: #ddd;
+            border: 1px solid #0078d7;
             padding: 10px 20px;
             border-radius: 10px;
             cursor: pointer;
@@ -68,11 +72,13 @@
         }
 
         input[type="submit"]:hover {
-            background-color: #005a9e;
+            background-color: #0078d7;
+            color: #fff;
         }
 
+
         .success-message {
-            color: green;
+            color: lime;
             margin-top: 10px;
         }
 
@@ -101,7 +107,7 @@
             width: 100%;
             height: 100%;
             border-radius: 24px;
-            background-color: #ccc;
+            background-color: #444;
             cursor: pointer;
         }
 
@@ -124,69 +130,62 @@
 
         .toggle-switch input[type="checkbox"]:checked+label:after {
             transform: translateX(36px);
-        }.slider {
-    width: 600px;
-    height: 20px;
-    -webkit-appearance: none;
-    background-color: #ddd;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-    border-radius: 20px;
-}
-.slider {
-    width: 300px;
-    height: 20px;
-    -webkit-appearance: none;
-    background-color: #ddd;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-    border-radius: 10px;
-    margin: 20px;
-    padding: 2px;
-}
+        }
 
-.slider:hover {
-    opacity: 1;
-}
+        .slider {
+            width: 300px;
+            height: 20px;
+            -webkit-appearance: none;
+            background-color: #444;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            border-radius: 10px;
+            margin: 20px;
+            padding: 2px;
+        }
 
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 40px;
-    background-color: #0078d7;
-    cursor: pointer;
-    border-radius: 50%;
-}
+        .slider:hover {
+            opacity: 1;
+        }
 
-.slider::-moz-range-thumb {
-    width: 20px;
-    height: 40px;
-    background-color: #0078d7;
-    cursor: pointer;
-    border-radius: 50%;
-}
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 40px;
+            background-color: #0078d7;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 40px;
+            background-color: #0078d7;
+            cursor: pointer;
+            border-radius: 50%;
+        }
     </style>
+
 </head>
 
 <body>
     <div class="container">
         <h2>Alarm Clock</h2>
-        <span class="current" >
-        <p >
-            <span class="toggle-switch">
-                <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif %}>
-                <label for="alarm-active"></label>
-            </span>
-        <p>
-            Currently: {{alarm_time.strftime('%H:%M')}}
-        </p>
-        </p>
-    </span>
+        <span class="current">
+            <p>
+                <span class="toggle-switch">
+                    <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif
+                        %}>
+                    <label for="alarm-active"></label>
+                </span>
+            <p>
+                Currently: {{alarm_time.strftime('%H:%M')}}
+            </p>
+            </p>
+        </span>
 
         <form class="change" method="POST" action="/set_alarm">
             <input type="submit" value="Change to">

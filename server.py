@@ -305,7 +305,6 @@ def set_balance(balance):
 
     # set volumes
     command = f"amixer sset 'Master' {left}%,{right}%"
-    app.logger.info(f"command is: ____________ {command}")
     os.system(command)
     app.logger.info(f"Balance set to {balance} =>({left}% left, {right}% right)")
 
