@@ -5,6 +5,8 @@ from flask import Flask, request, redirect, url_for, Response
 from urllib import parse
 import requests
 from subprocess import run
+import re
+from subprocess import check_output
 import subprocess
 import base64
 from crontab import CronTab
@@ -60,6 +62,8 @@ SPOTIFY_DEVICE_ID =  cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
 fade_minutes = 2
+
+g_balance = 0
 
 from flask import render_template
 import datetime
@@ -186,7 +190,7 @@ def homeassistant_triggerWebhook(webhook_name):
 def spotialarm():
    app.logger.info('Starting spotify alarm') 
    global fade_minutes
-   start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=fade_minutes)
+   start_fade_volume_in(goal_volume=70, fade_duration_mins=fade_minutes)
 
    try:
         spotiplay()
@@ -259,45 +263,81 @@ def playpause():
     else:
         play()
 
-def start_fading_volume_in_thread(goal_volume=70, fade_duration_mins=1.0):
-    # start fade_volume in a new thread
-    fade_thread = threading.Thread(target=fade_volume, args=(goal_volume, fade_duration_mins))
+def start_fade_volume_in(goal_volume=70, fade_duration_mins=1.0):
+    # start fade_volume_in in a new thread
+    fade_thread = threading.Thread(target=fade_volume_in, args=(goal_volume, fade_duration_mins))
     fade_thread.start()
 
-def fade_volume(goal_volume=70, fade_duration_mins=1):
+def fade_volume_in(goal_volume=70, fade_duration_mins=1):
     set_volume(0)
     fade_duration_secs = fade_duration_mins * 60
     sleep_time = fade_duration_secs / goal_volume
     for i in range(0, goal_volume):
-        set_volume(i)
+        set_volume(i/100)
         time.sleep(sleep_time)
+
+def start_fade_volume_out(fade_duration_mins=1.0):
+    # start fade_volume_in in a new thread
+    try:
+        fade_thread = threading.Thread(target=fade_volume_out, args=(fade_duration_mins,))
+        fade_thread.start()
+    except:
+        app.logger.info("Failed to start fade_volume_out thread")   
+
+def fade_volume_out(fade_duration_mins=1):
+    try:
+        fade_duration_secs = fade_duration_mins * 60
+        current_volume = get_volume()
+        sleep_time = fade_duration_secs / current_volume
+        for i in range(current_volume, 0):
+            set_volume(i)
+            time.sleep(sleep_time)
+    except:
+        app.logger.info("Failed to fade_volume_out")
+        # print trace with logger
+        app.logger.exception("message")
+        
+
+    radiostop()
+    spotipause()
 
 @app.route("/volume")
 def volume():
-    new_volume = request.args.get('volume')
-    set_volume(new_volume)
+    new_volume = float(request.args.get('volume')) / 100.0
 
     b = request.args.get('balance')
     if b is not None:
-        set_balance(float(b))
-
+        set_volume(new_volume, float(b))
+    else:
+        set_volume(new_volume)
+        
     return "Volume set to " + str(new_volume) if new_volume is not None else "Volume not set"
 
+def get_volume():
+    output = check_output(["amixer", "get", "Master"])
+    match = re.search(r"\[(\d+)%\]", output.decode())
+    if match:
+        return int(match.group(1))
+    else:
+        return None
 
-def set_volume(new_volume):
-    run(["amixer", "set", "Master", str(new_volume) + "%"])
-    app.logger.info("Volume set to " + str(new_volume) + "%")
+def set_volume(volume, balance=-1):
+    global g_balance
+    # volume  is a float from 0 -1
+    volume = max(min(float(volume), 1), 0)
 
-def set_balance(balance):
-    # balance is a float ranging from -1 (full left) to 1 (full right)
-
-    # clamp balance to range [-1, 1] to avoid errors
-    balance = max(min(balance, 1), -1)
+    if balance is not -1:
+        # balance is a float ranging from -1 (full left) to 1 (full right)
+        # clamp balance to range [-1, 1] to avoid errors
+        g_balance = max(min(float(balance), 1), -1)
 
     # calculate left and right channel volumes
     # the 'sqrt' function ensures power (not amplitude) balance
-    left = math.sqrt((balance - 1) / -2) * 100
-    right = math.sqrt((balance + 1) / 2) * 100
+    left = math.sqrt((g_balance - 1) / -2) * 100
+    right = math.sqrt((g_balance + 1) / 2) * 100
+
+    left *= volume 
+    right *= volume
 
     # convert to percentages and make sure volumes are within [0, 100]
     left = min(max(left, 0), 100)
@@ -306,7 +346,7 @@ def set_balance(balance):
     # set volumes
     command = f"amixer sset 'Master' {left}%,{right}%"
     os.system(command)
-    app.logger.info(f"Balance set to {balance} =>({left}% left, {right}% right)")
+    app.logger.info(f"Volume set {volume}, {balance} =>({left}% left, {right}% right)")
 
 
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}, retries_attempted=0):
@@ -363,8 +403,7 @@ def say(something):
 
 @app.route("/stop")
 def stop():
-    radiostop()
-    spotipause()
+    start_fade_volume_out(0.5)
     return "Playback stopped"
 
 @app.route("/radioplay")
@@ -376,7 +415,7 @@ def radioplay():
 @app.route("/radioalarm")
 def radioalarm():
     app.logger.info('Starting radio alarm')
-    start_fading_volume_in_thread(fade_duration_mins=fade_minutes)
+    start_fade_volume_in(fade_duration_mins=fade_minutes)
     radioplay()
     homeassistant_triggerWebhook('wakeup_alarm_triggered')
     return "Radio alarm started"
