@@ -15,7 +15,9 @@ Warning: WIP: the README is lacking and the setup is not smooth
 
 ```bash
 # At the moment this path is ~/Developer/spotify-alarm-clock is hardcoded somewhere, so it's easiest to use it until that's fixed
-mkdir ~/Developer
+cd ~
+mkdir Developer
+cd Developer
 git clone https://github.com/janek/spotify-alarm-clock/
 cd ~/Developer/
 
@@ -25,8 +27,10 @@ make dependencies
 # Install the systemd service
 make install
 
-# Configure
+# copy sample ini file
 cp config.sample.ini config.ini 
+# configure here:
+nano config.ini
 
 ```
 
