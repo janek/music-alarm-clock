@@ -30,7 +30,8 @@ install:
 	systemctl --user enable spotify-alarm-clock
 
 aliases:
-	echo bash_aliases.sh >> ~/.bash_aliases
+	cat bash_aliases.sh >> ~/.bash_aliases
+	source ~/.bashrc
 
 restart:
 	systemctl --user restart spotify-alarm-clock
