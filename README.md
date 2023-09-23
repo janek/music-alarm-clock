@@ -12,7 +12,7 @@ Warning: WIP: the README is lacking and the setup is not smooth
   - This enables the Raspi to work as music receiver over Spotify Connect, AirPlay and Bluetooth. The script will let you choose which.
   - You can use this repository (in internet radio mode) without any of those. If you want to use Spotify as an alarm clock, you'll need Spotify Connect
   - If the installation doesn't work, consider instaling individual modules separately ([Shairport Sync](https://github.com/mikebrady/shairport-sync/), [Raspotify](https://github.com/dtcooper/raspotify) and others - see also `install.sh` in [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver)
-  - After installation potify and AirPlay should work immediately, bluetooth could need a restart
+  - After installation, Spotify and AirPlay should work immediately, bluetooth could need a restart
   - If you're using a Raspi Zero W, use the [https://github.com/Arcadia197/rpi-audio-receiver]() fork instead. You might run into problems with bluetooth anyway; consider also [this guide](https://gist.github.com/actuino/9548329d1bba6663a63886067af5e4cb)
 - Install this repo's contents (below)
 
