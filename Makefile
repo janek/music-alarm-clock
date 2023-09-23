@@ -26,6 +26,11 @@ aliases:
 	cat bash_aliases >> ~/.bash_aliases
 	source ~/.bashrc
 
+radio-stations:
+	mpc add https://stream-relay-geo.ntslive.net/stream
+	mpc add https://stream-relay-geo.ntslive.net/stream2
+	mpc add https://streaming.radio.co/s3699c5e49/listen
+
 restart:
 	systemctl --user restart spotify-alarm-clock
 
