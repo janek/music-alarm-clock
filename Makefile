@@ -5,13 +5,6 @@ all:
 	@echo make restart
 	@echo make keyboard-dev
 
-install-audio-receiver:
-	wget -q https://github.com/nicokaiser/rpi-audio-receiver/archive/main.zip
-	unzip main.zip
-	rm main.zip
-	cd rpi-audio-receiver-main
-	sudo ./install.sh
-
 dependencies:
 	sudo apt install curl virtualenv espeak mpc mpd
 	virtualenv -p /usr/bin/python3 virtualenv
