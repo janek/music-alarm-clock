@@ -7,17 +7,23 @@ Warning: WIP: the README is lacking and the setup is not smooth
 ## Setting up the Raspberry Pi
 
 - Install the OS in headless mode following [Tom's Hardware Guide](https://www.tomshardware.com/reviews/raspberry-pi-headless-setup-how-to,6028.html)
-- Make sure the timezone of the raspberry pi is the same as your timezone
-- Install [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver) with the USB audio card already plugged in. Spotify and AirPlay should work immediately, bluetooth could need a restart.
+- Make sure the timezone of the raspberry pi is the same as your timezone. Locale should be set in the SD flashing process, but consider double-checking.
+- Consider installing [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver).
+  - This enables the Raspi to work as music receiver over Spotify Connect, AirPlay and Bluetooth. The script will let you choose which.
+  - You can use this repository (in internet radio mode) without any of those. If you want to use Spotify as an alarm clock, you'll need Spotify Connect
+  - If the installation doesn't work, consider instaling individual modules separately ([Shairport Sync](https://github.com/mikebrady/shairport-sync/), [Raspotify](https://github.com/dtcooper/raspotify) and others - see also `install.sh` in [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver)
+  - After installation, Spotify and AirPlay should work immediately, bluetooth could need a restart
+  - If you're using a Raspi Zero W, use the [https://github.com/Arcadia197/rpi-audio-receiver]() fork instead. You might run into problems with bluetooth anyway; consider also [this guide](https://gist.github.com/actuino/9548329d1bba6663a63886067af5e4cb)
 - Install this repo's contents (below)
 
 ## Installation
 
 ```bash
-# At the moment this path is ~/Developer/spotify-alarm-clock is hardcoded somewhere, so it's easiest to use it until that's fixed
+# At the moment the path is ~/Developer/spotify-alarm-clock is hardcoded somewhere, so it's easiest to use it until that's improved
 mkdir ~/Developer
+cd ~/Developer
 git clone https://github.com/janek/spotify-alarm-clock/
-cd ~/Developer/spotify-alarm-clock/
+cd spotify-alarm-clock
 
 # Install apt dependencies and then Python dependencies in a virtualenv
 make dependencies
@@ -25,14 +31,63 @@ make dependencies
 # Install the systemd service
 sudo make install
 
-# Configure
-cp config.sample.ini config.ini 
+# copy sample ini file
+cp config.sample.ini config.ini
+# configure here:
+nano config.ini
 
 ```
 
-## Running
+## Debugging and fixing sound
 
-`curl <your_pi_ip_address>:3141/areyourunning` or go to `http://<your_pi_ip_address_or_hostname>:3141/areyourunning` in your browser
+- `aplay /usr/share/sounds/alsa/Front_Center.wav` is a good test to see if sound works
+- `aplay -l` to see what sound devices are visible
+- `aplay /usr/share/sounds/alsa/Front_Center.wav -D sysdefault:CARD=1` with 1 or 0, to test specific sound outputs
+- for `mpc`/`mpd` to work, do `sudo vi /etc/mpd.conf` and uncomment lines get this result:
+
+```
+audio_output {
+	type		"alsa"
+	name		"My ALSA Device"
+}
+```
+
+- on a Raspi Zero W, using a USB card, you might have to do the following:
+
+```
+sudo vim /etc/asound.conf -> add these lines
+defaults.pcm.card 1
+defaults.ctl.card 1
+```
+
+```
+sudo vim /usr/share/alsa/alsa.conf -> change 0s to 1s to get the same lines as a result
+defaults.pcm.card 1
+defaults.ctl.card 1
+```
+
+## Optional tips and settings
+
+- `ssh-copy-id -i ~/.ssh/id_ed25519.pub pi@zero-one` to copy your ssh public key and remove the need for a password. Replace `ed25519` by whatever you're using (you can see what's in the folder) and `pi@zero-one` with your username and hostname/ip
+- `set -o vi` to use vi shortcuts in terminal
+- `make aliases` for useful aliases (see `bash_aliases.sh` to see the contents).
+  - (warning: some aliases use `vim` to edit files, which won't work by default. You have to install vim/neovim, or change/alias it to `vi` or `nano`)
+  - you can type `alias` to see the list of available aliases (after you install them)
+- `sudo vi /etc/motd` + [https://patorjk.com/software/taag](https://patorjk.com/software/taag) to make a friendly welcome message (consider checking "test all" on the website)
+- `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` (or `wifi` if you have aliases) to add additional wifi networks
+
+## Local development with Docker
+
+This project won't run on macOS or Windows (I think). You can use Docker to run the code localy. (Tip for macOS in 2023: [OrbStack](https://orbstack.dev/) is the best way to use Docker).
+
+To run:
+
+`docker build -t spotify-alarm-clock:latest .`
+`docker run -it -p 3141:3141 spotify-alarm-clock:latest`
+
+You can then connect to it using localhost from machine you're working on, or the IP of that machine when connecting from somewhere else. Verify that it's working with:
+
+`http://localhost:3141/areyourunning` or `http://192.168.0.38:3141/authorize_spotify`
 
 ## Spotify authorization
 

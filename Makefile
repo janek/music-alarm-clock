@@ -5,14 +5,7 @@ all:
 	@echo make restart
 	@echo make keyboard-dev
 
-install-audio-receiver:
-	wget -q https://github.com/nicokaiser/rpi-audio-receiver/archive/main.zip
-	unzip main.zip
-	rm main.zip
-	
-	cd rpi-audio-receiver-main;	sudo ./install.sh
-
-dependencies: install-audio-receiver
+dependencies:
 	sudo apt install curl virtualenv espeak mpc mpd
 	virtualenv -p /usr/bin/python3 virtualenv
 	./virtualenv/bin/pip install --upgrade -r requirements.txt
@@ -34,6 +27,16 @@ install:
 	cp spotify-alarm-clock.service /etc/systemd/service
 	sudo systemctl daemon-reload
 	sudo systemctl enable spotify-alarm-clock
+
+aliases:
+	cat bash_aliases >> ~/.bash_aliases
+	source ~/.bashrc
+
+radio-stations:
+	mpc add https://stream-relay-geo.ntslive.net/stream
+	mpc add https://stream-relay-geo.ntslive.net/stream2
+	mpc add https://streaming.radio.co/s3699c5e49/listen
+	mpc repeat on
 
 restart:
 	## systemctl --user restart spotify-alarm-clock
