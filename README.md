@@ -43,15 +43,25 @@ nano config.ini
 - `aplay /usr/share/sounds/alsa/Front_Center.wav` is a good test to see if sound works
 - `aplay -l` to see what sound devices are visible
 - `aplay /usr/share/sounds/alsa/Front_Center.wav -D sysdefault:CARD=1` with 1 or 0, to test specific sound outputs
+- for `mpc`/`mpd` to work, do `sudo vi /etc/mpd.conf` and uncomment lines get this result:
+
+```
+audio_output {
+	type		"alsa"
+	name		"My ALSA Device"
+}
+```
+
 - on a Raspi Zero W, using a USB card, you might have to do the following:
 
 ```
 sudo vim /etc/asound.conf -> add these lines
 defaults.pcm.card 1
 defaults.ctl.card 1
+```
 
-
-sudo vim /usr/share/alsa/alsa.conf -> change 0s to 1s to get the same lines in effect
+```
+sudo vim /usr/share/alsa/alsa.conf -> change 0s to 1s to get the same lines as a result
 defaults.pcm.card 1
 defaults.ctl.card 1
 ```
