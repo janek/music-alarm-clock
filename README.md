@@ -8,7 +8,12 @@ Warning: WIP: the README is lacking and the setup is not smooth
 
 - Install the OS in headless mode following [Tom's Hardware Guide](https://www.tomshardware.com/reviews/raspberry-pi-headless-setup-how-to,6028.html)
 - Make sure the timezone of the raspberry pi is the same as your timezone. Locale should be set in the SD flashing process, but consider double-checking.
-- Install [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver) with the USB audio card already plugged in. Spotify and AirPlay should work immediately, bluetooth could need a restart.
+- Consider installing [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver).
+  - This enables the Raspi to work as music receiver over Spotify Connect, AirPlay and Bluetooth. The script will let you choose which.
+  - You can use this repository (in internet radio mode) without any of those. If you want to use Spotify as an alarm clock, you'll need Spotify Connect
+  - If the installation doesn't work, consider instaling individual modules separately ([Shairport Sync](https://github.com/mikebrady/shairport-sync/), [Raspotify](https://github.com/dtcooper/raspotify) and others - see also `install.sh` in [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver)
+  - After installation potify and AirPlay should work immediately, bluetooth could need a restart
+  - If you're using a Raspi Zero W, use the [https://github.com/Arcadia197/rpi-audio-receiver]() fork instead. You might run into problems with bluetooth anyway; consider also [this guide](https://gist.github.com/actuino/9548329d1bba6663a63886067af5e4cb)
 - Install this repo's contents (below)
 
 ## Installation
