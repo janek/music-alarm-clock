@@ -76,9 +76,18 @@ defaults.ctl.card 1
 - `sudo vi /etc/motd` + [https://patorjk.com/software/taag](https://patorjk.com/software/taag) to make a friendly welcome message (consider checking "test all" on the website)
 - `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` (or `wifi` if you have aliases) to add additional wifi networks
 
-## Running
+## Local development with Docker
 
-`curl <your_pi_ip_address>:3141/areyourunning` or go to `http://<your_pi_ip_address_or_hostname>:3141/areyourunning` in your browser
+This project won't run on macOS or Windows (I think). You can use Docker to run the code localy. (Tip for macOS in 2023: [OrbStack](https://orbstack.dev/) is the best way to use Docker).
+
+To run:
+
+`docker build -t spotify-alarm-clock:latest .`
+`docker run -it -p 3141:3141 spotify-alarm-clock:latest`
+
+You can then connect to it using localhost from machine you're working on, or the IP of that machine when connecting from somewhere else. Verify that it's working with:
+
+`http://localhost:3141/areyourunning` or `http://192.168.0.38:3141/authorize_spotify`
 
 ## Spotify authorization
 
