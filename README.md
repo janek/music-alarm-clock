@@ -7,7 +7,7 @@ Warning: WIP: the README is lacking and the setup is not smooth
 ## Setting up the Raspberry Pi
 
 - Install the OS in headless mode following [Tom's Hardware Guide](https://www.tomshardware.com/reviews/raspberry-pi-headless-setup-how-to,6028.html)
-- Make sure the timezone of the raspberry pi is the same as your timezone
+- Make sure the timezone of the raspberry pi is the same as your timezone. Locale should be set in the SD flashing process, but consider double-checking.
 - Install [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver) with the USB audio card already plugged in. Spotify and AirPlay should work immediately, bluetooth could need a restart.
 - Install this repo's contents (below)
 
@@ -33,12 +33,15 @@ nano config.ini
 
 ```
 
-## Optional quality-of-life settings
+## Optional tips and settings
 
+- `ssh-copy-id -i ~/.ssh/id_ed25519.pub pi@zero-one` to copy your ssh public key and remove the need for a password. Replace `ed25519` by whatever you're using (you can see what's in the folder) and `pi@zero-one` with your username and hostname/ip
 - `set -o vi` to use vi shortcuts in terminal
 - `make aliases` for useful aliases (see `bash_aliases.sh` to see the contents).
   - (warning: some aliases use `vim` to edit files, which won't work by default. You have to install vim/neovim, or change/alias it to `vi` or `nano`)
   - you can type `alias` to see the list of available aliases (after you install them)
+- `sudo vi /etc/motd` + [https://patorjk.com/software/taag](https://patorjk.com/software/taag) to make a friendly welcome message (consider checking "test all" on the website)
+- `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf` (or `wifi` if you have aliases) to add additional wifi networks
 
 ## Running
 
