@@ -14,7 +14,7 @@ Warning: WIP: the README is lacking and the setup is not smooth
 ## Installation
 
 ```bash
-# At the moment this path is ~/Developer/spotify-alarm-clock is hardcoded somewhere, so it's easiest to use it until that's fixed
+# At the moment the path is ~/Developer/spotify-alarm-clock is hardcoded somewhere, so it's easiest to use it until that's improved
 mkdir ~/Developer
 cd ~/Developer
 git clone https://github.com/janek/spotify-alarm-clock/
