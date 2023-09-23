@@ -15,11 +15,9 @@ Warning: WIP: the README is lacking and the setup is not smooth
 
 ```bash
 # At the moment this path is ~/Developer/spotify-alarm-clock is hardcoded somewhere, so it's easiest to use it until that's fixed
-cd ~
-mkdir Developer
-cd Developer
+mkdir ~/Developer
+cd ~/Developer
 git clone https://github.com/janek/spotify-alarm-clock/
-cd ~/Developer/
 
 # Install apt dependencies and then Python dependencies in a virtualenv
 make dependencies
