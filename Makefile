@@ -30,6 +30,7 @@ radio-stations:
 	mpc add https://stream-relay-geo.ntslive.net/stream
 	mpc add https://stream-relay-geo.ntslive.net/stream2
 	mpc add https://streaming.radio.co/s3699c5e49/listen
+	mpc repeat on
 
 restart:
 	systemctl --user restart spotify-alarm-clock
