@@ -33,6 +33,13 @@ nano config.ini
 
 ```
 
+## Optional quality-of-life settings
+
+- `set -o vi` to use vi shortcuts in terminal
+- `make aliases` for useful aliases (see `bash_aliases.sh` to see the contents).
+  - (warning: some aliases use `vim` to edit files, which won't work by default. You have to install vim/neovim, or change/alias it to `vi` or `nano`)
+  - you can type `alias` to see the list of available aliases (after you install them)
+
 ## Running
 
 `curl <your_pi_ip_address>:3141/areyourunning` or go to `http://<your_pi_ip_address_or_hostname>:3141/areyourunning` in your browser

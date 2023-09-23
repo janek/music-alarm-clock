@@ -29,6 +29,9 @@ install:
 	# Enable the service to start system boot (I hope)
 	systemctl --user enable spotify-alarm-clock
 
+aliases:
+	echo bash_aliases.sh >> ~/.bash_aliases
+
 restart:
 	systemctl --user restart spotify-alarm-clock
 
