@@ -402,9 +402,14 @@ def say(something):
     run(["espeak", something], stdout=subprocess.DEVNULL)
 
 @app.route("/stop")
-def stop():
-    start_fade_volume_out(0.5)
-    return "Playback stopped"
+def stop(fade_duration_mins=0):
+    if fade_duration_mins > 0:
+        start_fade_volume_out(fade_duration_mins)
+        return "Fading out playback over " + str(fade_duration_mins) + " minutes"
+    else:
+        radiostop()
+        spotipause()
+        return "Playback stopped"
 
 @app.route("/radioplay")
 def radioplay():
