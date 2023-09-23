@@ -18,6 +18,7 @@ Warning: WIP: the README is lacking and the setup is not smooth
 mkdir ~/Developer
 cd ~/Developer
 git clone https://github.com/janek/spotify-alarm-clock/
+cd spotify-alarm-clock
 
 # Install apt dependencies and then Python dependencies in a virtualenv
 make dependencies
@@ -26,7 +27,7 @@ make dependencies
 make install
 
 # copy sample ini file
-cp config.sample.ini config.ini 
+cp config.sample.ini config.ini
 # configure here:
 nano config.ini
 
