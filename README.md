@@ -38,6 +38,24 @@ nano config.ini
 
 ```
 
+## Debugging and fixing sound
+
+- `aplay /usr/share/sounds/alsa/Front_Center.wav` is a good test to see if sound works
+- `aplay -l` to see what sound devices are visible
+- `aplay /usr/share/sounds/alsa/Front_Center.wav -D sysdefault:CARD=1` with 1 or 0, to test specific sound outputs
+- on a Raspi Zero W, using a USB card, you might have to do the following:
+
+```
+sudo vim /etc/asound.conf -> add these lines
+defaults.pcm.card 1
+defaults.ctl.card 1
+
+
+sudo vim /usr/share/alsa/alsa.conf -> change 0s to 1s to get the same lines in effect
+defaults.pcm.card 1
+defaults.ctl.card 1
+```
+
 ## Optional tips and settings
 
 - `ssh-copy-id -i ~/.ssh/id_ed25519.pub pi@zero-one` to copy your ssh public key and remove the need for a password. Replace `ed25519` by whatever you're using (you can see what's in the folder) and `pi@zero-one` with your username and hostname/ip
