@@ -12,7 +12,7 @@ install-audio-receiver:
 	cd rpi-audio-receiver-main
 	sudo ./install.sh
 
-dependencies: install-audio-receiver
+dependencies:
 	sudo apt install curl virtualenv espeak mpc mpd
 	virtualenv -p /usr/bin/python3 virtualenv
 	./virtualenv/bin/pip install --upgrade -r requirements.txt
