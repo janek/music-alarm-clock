@@ -14,7 +14,7 @@ dependencies:
 install:
 	# Install the systemd service...
 	# Copy the service file to the global systemd directory
-	cp spotify-alarm-clock.service /etc/systemd/service
+	cp spotify-alarm-clock.service /etc/systemd/system
 	# Reload the systemd daemon: https://askubuntu.com/a/1143989/413683
 	sudo systemctl daemon-reload
 	# Enable the service
