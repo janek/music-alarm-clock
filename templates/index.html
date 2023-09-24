@@ -191,7 +191,7 @@
         <form class="change" method="POST" action="/set_alarm">
             <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.strftime('%H')  }}" placeholder="Hour">
             :
-            <input type="number" name="minute" min="0" max="59" step="10" value="{{ alarm_time.minute }}" placeholder="Minute">
+            <input type="number" name="minute" min="0" max="59" step="10" value="{{ alarm_time.strftime('%M') }}" placeholder="Minute">
             <input type="submit" value="Set">
         </form>
 
