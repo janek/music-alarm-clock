@@ -12,12 +12,10 @@ dependencies:
 	echo "Reboot is recommended now"
 
 install:
-	# Install the systemd service...
-	# Copy the service file to the global systemd directory
-	cp spotify-alarm-clock.service /etc/systemd/system
-	# Reload the systemd daemon: https://askubuntu.com/a/1143989/413683
+	# Installs the systemd service
+	# For the program to run in the background and start on boot
+	sudo cp spotify-alarm-clock.service /etc/systemd/system
 	sudo systemctl daemon-reload
-	# Enable the service
 	sudo systemctl enable spotify-alarm-clock
 
 aliases:
