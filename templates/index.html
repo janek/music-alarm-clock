@@ -246,33 +246,24 @@
     </div>
 
     <script>
-        const alarmActiveCheckbox = document.getElementById('alarm-active');
-
-        alarmActiveCheckbox.addEventListener('change', () => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/set_alarm_active');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({ alarm_active: alarmActiveCheckbox.checked }));
-        });
-    </script>
-
-    <script>
         function handleSliderChange() {
-            // Get the current volume and balance from the sliders
             const volume = document.getElementById("volume").value;
             const balance = document.getElementById("balance").value;
-
-            // Send a request to the /volume webhook with the volume and balance parameters
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/volume?volume=${volume}&balance=${balance}`);
             xhr.send();
         }
+        
+        function handleAlarmToggleChanged() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/set_alarm_active');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({ alarm_active: alarmActiveCheckbox.checked }));
+        }
 
-        // Get the volume and balance sliders
-        const volumeSlider = document.getElementById("volume");
-        const balanceSlider = document.getElementById("balance");
+        const alarmActiveCheckbox = document.getElementById('alarm-active');
 
-        // Attach the handleSliderChange function to both sliders
+        alarmActiveCheckbox.addEventListener('change', handleAlarmToggleChanged);
         volumeSlider.addEventListener("input", handleSliderChange);
         balanceSlider.addEventListener("input", handleSliderChange);
     </script>
