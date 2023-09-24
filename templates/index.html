@@ -16,26 +16,23 @@
             margin: 5px;
         }
 
-        p {
-            line-height: 20px;
-            height: 2em;
-            display: table-cell;
-            vertical-align: middle;
-            padding: 10px;
-        }
-
         .container {
             text-align: center;
             max-width: 600px;
             margin: 0 auto;
-            padding: 10px;
             background-color: #222;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding-top: 20px;
+            padding-bottom: 30px;
         }
 
-        .current {
-            align: center;
+        .current-alarm-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
         .change {
@@ -45,9 +42,14 @@
 
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: bold;
             color: #ddd;
+        }
+
+        .single-slider-container label {
+            margin-top: 20px;
+            margin-bottom: 0px;
         }
 
         input[type="number"] {
@@ -61,17 +63,18 @@
             background-color: #222;
         }
 
-        input[type="submit"] {
+        button, input[type="submit"] {
             background-color: #444;
             color: #ddd;
             border: 1px solid #0078d7;
-            padding: 10px 20px;
+            padding: 6px 15px;
+            margin-left: 5px;
             border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
         }
 
-        input[type="submit"]:hover {
+        button:hover, input[type="submit"]:hover {
             background-color: #0078d7;
             color: #fff;
         }
@@ -157,7 +160,7 @@
             height: 40px;
             background-color: #0078d7;
             cursor: pointer;
-            border-radius: 50%;
+            border-radius: 10px;
         }
 
         .slider::-moz-range-thumb {
@@ -165,56 +168,67 @@
             height: 40px;
             background-color: #0078d7;
             cursor: pointer;
-            border-radius: 50%;
+            border-radius: 10px;
         }
+
+        .slider::-webkit-slider-thumb:active {
+            background-color: #f8e833; /* Color when thumb is active */
+        }
+
+        .slider::-moz-range-thumb:active {
+            background-color: #f8e833; /* Color when thumb is active */
+        }
+
+        .separator {
+            margin: 0 auto;
+            background-color: #444;
+            width: 320px;
+            height: 2px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: grid;
+            gap: 10px 2px;
+            grid-template-columns: 1fr 1fr;
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            line-height: 20px
+        }
+    
     </style>
 
 </head>
 
 <body>
     <div class="container">
-        <h2>Alarm Clock</h2>
-        <span class="current">
-            <p>
-                <span class="toggle-switch">
-                    <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif
-                        %}>
-                    <label for="alarm-active"></label>
-                </span>
-            <p>
-                Currently: {{alarm_time.strftime('%H:%M')}}
-            </p>
-            </p>
-        </span>
-
-        <form class="change" method="POST" action="/set_alarm">
-            <input type="submit" value="Change to">
-            <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.hour  }}" placeholder="Hour">
-            :
-            <input type="number" name="minute" min="0" max="59" value="{{ alarm_time.minute }}" placeholder="Minute">
-
-        </form>
-
-
-        <div class="slider-container">
-            <input type="range" class="slider" id="volume" min="0" max="100" step="0.1" value="50">
-            <label for="balance">Balance:</label>
-            <input type="range" class="slider" id="balance" name="balance" min="-1" max="1" step="0.01" value="0">
+        <div>
+            <h2>Alarm Clock</h2>
         </div>
-
-        <!--
-        <script>
-            // Get the current time
-            var now = new Date();
-            var hour = (now.getHours() + 8 ) % 24 // propose 8 hours from now
-            var minute = now.getMinutes();
-
-            // Set the value of the input fields
-            document.getElementsByName('hour')[0].value = hour;
-            document.getElementsByName('minute')[0].value = minute;
-        </script>
--->
-
+        <div class="separator"></div>
+        
+        <div class="current-alarm-info">
+            <h1>
+                {{alarm_time.strftime('%H:%M')}}
+            </h1>
+            <span class="toggle-switch">
+                <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif %}>
+                <label for="alarm-active"></label>
+            </span>
+        </div>
+        <div>
+            <form class="change" method="POST" action="/set_alarm">
+                <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.strftime('%H')  }}" placeholder="Hour">
+                :
+                <input type="number" name="minute" min="0" max="59" step="10" value="{{ alarm_time.strftime('%M') }}" placeholder="Minute">
+                <input type="submit" value="Set">
+            </form>
+        </div>
+        
         {% if success %}
         <p class="success-message">Alarm set successfully!</p>
         {% endif %}
@@ -222,38 +236,65 @@
         {% if error %}
         <p class="error-message">{{ error }}</p>
         {% endif %}
+        
+        <div class="separator"></div>
+
+
+        <div class="slider-container">
+            <div class="single-slider-container">
+                <label for="volume">Volume</label>
+                <input type="range" class="slider" id="volume" min="0" max="100" step="0.1" value="50">
+            </div>
+            
+            <div class="single-slider-container">
+                <label for="balance">Balance</label>
+                <input type="range" class="slider" id="balance" name="balance" min="-1" max="1" step="0.01" value="0">
+            </div>
+        </div>
+        <div class="separator"></div>
+        <div class="button-container">
+            <button class="action-button" data-endpoint="radioplay">Radio Play</button>
+            <button class="action-button" data-endpoint="radionext">Radio Next</button>
+            <button class="action-button" data-endpoint="spotiplay">Spoti Play</button>
+            <button class="action-button" data-endpoint="stop">Stop Music</button>
+        </div>
     </div>
 
     <script>
+
         const alarmActiveCheckbox = document.getElementById('alarm-active');
+        const volumeSlider = document.getElementById("volume")
+        const balanceSlider = document.getElementById("balance")
+        const buttons = document.querySelectorAll('.action-button');
 
-        alarmActiveCheckbox.addEventListener('change', () => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/set_alarm_active');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({ alarm_active: alarmActiveCheckbox.checked }));
-        });
-    </script>
-
-    <script>
         function handleSliderChange() {
-            // Get the current volume and balance from the sliders
-            const volume = document.getElementById("volume").value;
-            const balance = document.getElementById("balance").value;
-
-            // Send a request to the /volume webhook with the volume and balance parameters
+            const volume = volumeSlider.value;
+            const balance = balanceSlider.value;
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/volume?volume=${volume}&balance=${balance}`);
             xhr.send();
         }
+        
+        function handleAlarmToggleChanged() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/set_alarm_active');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({ alarm_active: alarmActiveCheckbox.checked }));
+        }
 
-        // Get the volume and balance sliders
-        const volumeSlider = document.getElementById("volume");
-        const balanceSlider = document.getElementById("balance");
+        function handleButtonPress(event) {
+            // Buttons have a data-endpoint attribute that contains the endpoint to call
+            // e.g. <button data-endpoint="radioplay">Radio Play</button>
+            const endpoint = event.target.dataset.endpoint;
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/${endpoint}`);
+            xhr.send();
+        }
 
-        // Attach the handleSliderChange function to both sliders
+        alarmActiveCheckbox.addEventListener('change', handleAlarmToggleChanged);
         volumeSlider.addEventListener("input", handleSliderChange);
         balanceSlider.addEventListener("input", handleSliderChange);
+        buttons.forEach(button => button.addEventListener('click', handleButtonPress));
     </script>
 
 </body>
