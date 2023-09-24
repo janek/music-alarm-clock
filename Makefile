@@ -7,6 +7,8 @@ all:
 	@echo make restart
 	@echo make keyboard-dev
 	@echo make test
+	@echo make docker-build
+	@echo make docker-run
 
 
 dependencies:
@@ -39,3 +41,10 @@ keyboard-dev:
 
 test:
 	./virtualenv/bin/pytest
+
+docker-build:
+	docker build -t spotify-alarm-clock:latest .
+
+docker-run:
+	docker run -it -p 3141:3141 spotify-alarm-clock:latest
+

@@ -19,7 +19,7 @@ Warning: WIP: the README is lacking and the setup is not smooth
 ## Installation
 
 ```bash
-# At the moment the path is ~/Developer/spotify-alarm-clock is hardcoded somewhere, so it's easiest to use it until that's improved
+# At the moment the path is ~/Developer/spotify-alarm-clock is hardcoded in `spotify-alam-clock.service`, so it's easiest to use it until that's improved
 mkdir ~/Developer
 cd ~/Developer
 git clone https://github.com/janek/spotify-alarm-clock/
@@ -83,14 +83,14 @@ defaults.ctl.card 1
 
 This project won't run on macOS or Windows (I think). You can use Docker to run the code localy. (Tip for macOS in 2023: [OrbStack](https://orbstack.dev/) is the best way to use Docker).
 
-To run:
+To build and run:
 
-`docker build -t spotify-alarm-clock:latest .`
-`docker run -it -p 3141:3141 spotify-alarm-clock:latest`
+`make docker-build`
+`make docker-run`
 
 You can then connect to it using localhost from machine you're working on, or the IP of that machine when connecting from somewhere else. Verify that it's working with:
 
-`http://localhost:3141/areyourunning` or `http://192.168.0.38:3141/authorize_spotify`
+`http://localhost:3141/` or `http://192.168.0.38:3141/`
 
 ## Spotify authorization
 
