@@ -63,7 +63,7 @@
             background-color: #222;
         }
 
-        input[type="submit"] {
+        button, input[type="submit"] {
             background-color: #444;
             color: #ddd;
             border: 1px solid #0078d7;
@@ -74,7 +74,7 @@
             font-size: 16px;
         }
 
-        input[type="submit"]:hover {
+        button:hover, input[type="submit"]:hover {
             background-color: #0078d7;
             color: #fff;
         }
@@ -188,6 +188,14 @@
             margin-bottom: 20px;
         }
 
+        .button-container {
+            display: grid;
+            gap: 10px 2px;
+            grid-template-columns: 1fr 1fr;
+            width: 300px;
+            margin: 0 auto;
+        }
+
         h1 {
             line-height: 20px
         }
@@ -243,12 +251,25 @@
                 <input type="range" class="slider" id="balance" name="balance" min="-1" max="1" step="0.01" value="0">
             </div>
         </div>
+        <div class="separator"></div>
+        <div class="button-container">
+            <button class="action-button" data-endpoint="radioplay">Radio Play</button>
+            <button class="action-button" data-endpoint="radionext">Radio Next</button>
+            <button class="action-button" data-endpoint="spotiplay">Spoti Play</button>
+            <button class="action-button" data-endpoint="stop">Stop Music</button>
+        </div>
     </div>
 
     <script>
+
+        const alarmActiveCheckbox = document.getElementById('alarm-active');
+        const volumeSlider = document.getElementById("volume")
+        const balanceSlider = document.getElementById("balance")
+        const buttons = document.querySelectorAll('.action-button');
+
         function handleSliderChange() {
-            const volume = document.getElementById("volume").value;
-            const balance = document.getElementById("balance").value;
+            const volume = volumeSlider.value;
+            const balance = balanceSlider.value;
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/volume?volume=${volume}&balance=${balance}`);
             xhr.send();
@@ -261,11 +282,17 @@
             xhr.send(JSON.stringify({ alarm_active: alarmActiveCheckbox.checked }));
         }
 
-        const alarmActiveCheckbox = document.getElementById('alarm-active');
+        function handleButtonPress(event) {
+            const endpoint = event.target.dataset.endpoint;
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/${endpoint}`);
+            xhr.send();
+        }
 
         alarmActiveCheckbox.addEventListener('change', handleAlarmToggleChanged);
         volumeSlider.addEventListener("input", handleSliderChange);
         balanceSlider.addEventListener("input", handleSliderChange);
+        buttons.forEach(button => button.addEventListener('click', handleButtonPress));
     </script>
 
 </body>
