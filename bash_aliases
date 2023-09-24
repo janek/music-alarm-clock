@@ -14,8 +14,8 @@ alias gst='git status'
 alias setdisp='echo "export DISPLAY=:0.0" >> ~/.bash_profile; export DISPLAY=:0.0" >> ~/.bashrc'
 alias xorg='ps aux | grep Xorg'
 
-alias status='systemctl status raspotify | awk '\''FNR <= 3'\'' && systemctl --user status spotify-alarm-clock | awk '\''FNR <= 3'\'' && systemctl status shairport-sync | awk '\''FNR <= 3'\'' && systemctl --user status spotify-keyboard-controls | awk '\''FNR <= 3'\'''
-alias slog='systemctl --user status spotify-alarm-clock -n50'
+alias status='systemctl status raspotify | awk '\''FNR <= 3'\'' && systemctl status spotify-alarm-clock | awk '\''FNR <= 3'\'' && systemctl status shairport-sync | awk '\''FNR <= 3'\'' && systemctl status spotify-keyboard-controls | awk '\''FNR <= 3'\'''
+alias slog='systemctl status spotify-alarm-clock -n50'
 alias jrn='journalctl -f'
 
 alias snd='aplay /usr/share/sounds/alsa/Front_Center.wav'
@@ -28,13 +28,13 @@ alias splay='curl localhost:3141/spotiplay'
 alias sdvs='curl localhost:3141/devices'
 alias sauth='curl localhost:3141/request_spotify_authorization; echo  '
 
-alias sres='systemctl --user restart spotify-alarm-clock'
-alias sstart='systemctl --user start spotify-alarm-clock'
-alias sstop='systemctl --user stop spotify-alarm-clock'
+alias sres='systemctl restart spotify-alarm-clock'
+alias sstart='systemctl start spotify-alarm-clock'
+alias sstop='systemctl stop spotify-alarm-clock'
 
-alias kres='systemctl --user restart spotify-keyboard-controls'
-alias kstart='systemctl --user start spotify-keyboard-controls'
-alias kstop='systemctl --user stop spotify-keyboard-controls'
+alias kres='systemctl restart spotify-keyboard-controls'
+alias kstart='systemctl start spotify-keyboard-controls'
+alias kstop='systemctl stop spotify-keyboard-controls'
 
 alias spres='sudo systemctl restart raspotify && espeak "restarting spotify"'
 
