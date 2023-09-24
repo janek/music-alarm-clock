@@ -173,13 +173,30 @@
             background-color: #f8e833; /* Color when thumb is active */
         }
 
+        .separator {
+            margin: 0 auto;
+            background-color: #444;
+            width: 320px;
+            height: 2px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            line-height: 20px
+        }
+    
     </style>
 
 </head>
 
 <body>
     <div class="container">
-        <h2>Alarm Clock</h2>
+        <div>
+            <h2>Alarm Clock</h2>
+        </div>
+        <div class="separator"></div>
+        
         <div class="current-alarm-info">
             <h1>
                 {{alarm_time.strftime('%H:%M')}}
@@ -188,15 +205,16 @@
                 <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif %}>
                 <label for="alarm-active"></label>
             </span>
-
         </div>
-
-        <form class="change" method="POST" action="/set_alarm">
-            <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.strftime('%H')  }}" placeholder="Hour">
-            :
-            <input type="number" name="minute" min="0" max="59" step="10" value="{{ alarm_time.strftime('%M') }}" placeholder="Minute">
-            <input type="submit" value="Set">
-        </form>
+        <div>
+            <form class="change" method="POST" action="/set_alarm">
+                <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.strftime('%H')  }}" placeholder="Hour">
+                :
+                <input type="number" name="minute" min="0" max="59" step="10" value="{{ alarm_time.strftime('%M') }}" placeholder="Minute">
+                <input type="submit" value="Set">
+            </form>
+        </div>
+        <div class="separator"></div>
 
 
     <div class="slider-container">
