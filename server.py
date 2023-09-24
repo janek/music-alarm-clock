@@ -1,7 +1,7 @@
-import json
 import time
 import threading
-from flask import Flask, request, redirect, url_for, Response
+from flask import Flask, request, redirect, render_template
+import datetime
 from urllib import parse
 import requests
 from subprocess import run
@@ -64,9 +64,6 @@ currently_playing = False
 fade_minutes = 2
 
 g_balance = 0
-
-from flask import render_template
-import datetime
 
 # set up initial alarm time
 alarm_time = datetime.time(hour=8, minute=0)
