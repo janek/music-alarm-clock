@@ -12,7 +12,7 @@ dependencies:
 	echo "Reboot is recommended now"
 
 install:
-	# Installs the systemd service
+	# Install the systemd service
 	# For the program to run in the background and start on boot
 	sudo cp spotify-alarm-clock.service /etc/systemd/system
 	sudo systemctl daemon-reload
@@ -25,7 +25,6 @@ aliases:
 radio-stations:
 	mpc add https://stream-relay-geo.ntslive.net/stream
 	mpc add https://stream-relay-geo.ntslive.net/stream2
-	mpc add https://streaming.radio.co/s3699c5e49/listen
 	mpc repeat on
 
 restart:
