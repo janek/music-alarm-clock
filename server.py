@@ -171,15 +171,17 @@ def login():
 
 def homeassistant_triggerWebhook(webhook_name):
     url = "http://" + HOSTNAME + ":" + str(8123) + "/api/webhook/" + webhook_name
-    response = requests.get(url)
-    if response.status_code == 405:
-        result = 'Triggered Webhook'   
-        response = requests.put(url) 
-    else :
-        result = 'Did not find Webhook (create an automation in homeassistant first)'  
+    try:
+        response = requests.get(url)
+        if response.status_code == 405:
+            result = 'Triggered Webhook'
+            response = requests.put(url)
+        else:
+            result = 'Did not find Webhook (create an automation in homeassistant first)'
+    except requests.ConnectionError:
+        result = 'Connection error. Check if Home Assistant is running and network connectivity is fine.'
     
     result = result + ': ' + url
-
     logging.info(result)
     return result
 
