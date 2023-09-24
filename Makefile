@@ -15,12 +15,18 @@ install:
 	# Install the systemd service...
 	# Create systemd directories
 	mkdir -p ~/.config/systemd/user
+
 	# Copy the service file to systemd directories
-	cp spotify-alarm-clock.service ~/.config/systemd/user
+	## cp spotify-alarm-clock.service ~/.config/systemd/user
 	# Reload the systemd daemon: https://askubuntu.com/a/1143989/413683
-	systemctl --user daemon-reload
+	## systemctl --user daemon-reload
 	# Enable the service to start system boot (I hope)
-	systemctl --user enable spotify-alarm-clock
+	## systemctl --user enable spotify-alarm-clock
+
+	# copy the .service file to global systemd directory
+	cp spotify-alarm-clock.service /etc/systemd/service
+	sudo systemctl daemon-reload
+	sudo systemctl enable spotify-alarm-clock
 
 aliases:
 	cat bash_aliases >> ~/.bash_aliases
@@ -33,7 +39,8 @@ radio-stations:
 	mpc repeat on
 
 restart:
-	systemctl --user restart spotify-alarm-clock
+	## systemctl --user restart spotify-alarm-clock
+	sudo systemctl restart spotify-alarm-clock
 
 keyboard-dev:
 	sudo -E ./virtualenv/bin/python keyboard_control.py

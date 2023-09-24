@@ -29,7 +29,7 @@ cd spotify-alarm-clock
 make dependencies
 
 # Install the systemd service
-make install
+sudo make install
 
 # copy sample ini file
 cp config.sample.ini config.ini

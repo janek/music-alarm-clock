@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Alarm Clock</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #111;
+            color: #ddd;
+        }
+
+        h2 {
+            color: #ddd;
+            text-align: center;
+            margin: 5px;
+        }
+
+        p {
+            line-height: 20px;
+            height: 2em;
+            display: table-cell;
+            vertical-align: middle;
+            padding: 10px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #222;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .current {
+            align: center;
+        }
+
+        .change {
+            align: center;
+            padding: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ddd;
+        }
+
+        input[type="number"] {
+            width: 35px;
+            padding: 5px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            text-align: center;
+            color: #ddd;
+            background-color: #222;
+        }
+
+        input[type="submit"] {
+            background-color: #444;
+            color: #ddd;
+            border: 1px solid #0078d7;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0078d7;
+            color: #fff;
+        }
+
+
+        .success-message {
+            color: lime;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .toggle-switch {
+            display: inline-block;
+            position: relative;
+            width: 60px;
+            height: 24px;
+            margin-left: 10px;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            display: none;
+        }
+
+        .toggle-switch label {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            background-color: #444;
+            cursor: pointer;
+        }
+
+        .toggle-switch label:after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 20px;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch input[type="checkbox"]:checked+label {
+            background-color: #0078d7;
+        }
+
+        .toggle-switch input[type="checkbox"]:checked+label:after {
+            transform: translateX(36px);
+        }
+
+        .slider {
+            width: 300px;
+            height: 20px;
+            -webkit-appearance: none;
+            background-color: #444;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            border-radius: 10px;
+            margin: 20px;
+            padding: 2px;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 40px;
+            background-color: #0078d7;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 40px;
+            background-color: #0078d7;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h2>Alarm Clock</h2>
+        <span class="current">
+            <p>
+                <span class="toggle-switch">
+                    <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif
+                        %}>
+                    <label for="alarm-active"></label>
+                </span>
+            <p>
+                Currently: {{alarm_time.strftime('%H:%M')}}
+            </p>
+            </p>
+        </span>
+
+        <form class="change" method="POST" action="/set_alarm">
+            <input type="submit" value="Change to">
+            <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.hour  }}" placeholder="Hour">
+            :
+            <input type="number" name="minute" min="0" max="59" value="{{ alarm_time.minute }}" placeholder="Minute">
+
+        </form>
+
+
+        <div class="slider-container">
+            <input type="range" class="slider" id="volume" min="0" max="100" step="0.1" value="50">
+            <label for="balance">Balance:</label>
+            <input type="range" class="slider" id="balance" name="balance" min="-1" max="1" step="0.01" value="0">
+        </div>
+
+        <!--
+        <script>
+            // Get the current time
+            var now = new Date();
+            var hour = (now.getHours() + 8 ) % 24 // propose 8 hours from now
+            var minute = now.getMinutes();
+
+            // Set the value of the input fields
+            document.getElementsByName('hour')[0].value = hour;
+            document.getElementsByName('minute')[0].value = minute;
+        </script>
+-->
+
+        {% if success %}
+        <p class="success-message">Alarm set successfully!</p>
+        {% endif %}
+
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        const alarmActiveCheckbox = document.getElementById('alarm-active');
+
+        alarmActiveCheckbox.addEventListener('change', () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/set_alarm_active');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({ alarm_active: alarmActiveCheckbox.checked }));
+        });
+    </script>
+
+    <script>
+        function handleSliderChange() {
+            // Get the current volume and balance from the sliders
+            const volume = document.getElementById("volume").value;
+            const balance = document.getElementById("balance").value;
+
+            // Send a request to the /volume webhook with the volume and balance parameters
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/volume?volume=${volume}&balance=${balance}`);
+            xhr.send();
+        }
+
+        // Get the volume and balance sliders
+        const volumeSlider = document.getElementById("volume");
+        const balanceSlider = document.getElementById("balance");
+
+        // Attach the handleSliderChange function to both sliders
+        volumeSlider.addEventListener("input", handleSliderChange);
+        balanceSlider.addEventListener("input", handleSliderChange);
+    </script>
+
+</body>
+
+</html>
