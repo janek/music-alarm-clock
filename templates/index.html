@@ -65,7 +65,8 @@
             background-color: #444;
             color: #ddd;
             border: 1px solid #0078d7;
-            padding: 10px 20px;
+            padding: px 15px;
+            margin-left: 5px;
             border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
@@ -188,11 +189,10 @@
         </span>
 
         <form class="change" method="POST" action="/set_alarm">
-            <input type="submit" value="Change to">
-            <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.hour  }}" placeholder="Hour">
+            <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.strftime('%H')  }}" placeholder="Hour">
             :
-            <input type="number" name="minute" min="0" max="59" value="{{ alarm_time.minute }}" placeholder="Minute">
-
+            <input type="number" name="minute" min="0" max="59" step="10" value="{{ alarm_time.minute }}" placeholder="Minute">
+            <input type="submit" value="Set">
         </form>
 
 
