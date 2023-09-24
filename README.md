@@ -31,6 +31,9 @@ make dependencies
 # Install the systemd service
 sudo make install
 
+# Add defalt radio stations - you can also add your own with `mpc add <stream link>`
+make radio-staions
+
 # copy sample ini file
 cp config.sample.ini config.ini
 # configure here:

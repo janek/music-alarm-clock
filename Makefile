@@ -2,8 +2,12 @@ all:
 	@echo Usage:
 	@echo make dependencies
 	@echo make install
+	@echo make aliases
+	@echo make radio-stations
 	@echo make restart
 	@echo make keyboard-dev
+	@echo make test
+
 
 dependencies:
 	sudo apt install curl virtualenv espeak mpc mpd
@@ -28,7 +32,6 @@ radio-stations:
 	mpc repeat on
 
 restart:
-	## systemctl --user restart spotify-alarm-clock
 	sudo systemctl restart spotify-alarm-clock
 
 keyboard-dev:
