@@ -283,6 +283,8 @@
         }
 
         function handleButtonPress(event) {
+            // Buttons have a data-endpoint attribute that contains the endpoint to call
+            // e.g. <button data-endpoint="radioplay">Radio Play</button>
             const endpoint = event.target.dataset.endpoint;
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/${endpoint}`);
