@@ -214,33 +214,7 @@
                 <input type="submit" value="Set">
             </form>
         </div>
-        <div class="separator"></div>
-
-
-    <div class="slider-container">
-        <div class="single-slider-container">
-            <label for="volume">Volume:</label>
-            <input type="range" class="slider" id="volume" min="0" max="100" step="0.1" value="50">
-        </div>
         
-        <div class="single-slider-container">
-            <label for="balance">Balance:</label>
-            <input type="range" class="slider" id="balance" name="balance" min="-1" max="1" step="0.01" value="0">
-        </div>
-    </div>
-        <!--
-        <script>
-            // Get the current time
-            var now = new Date();
-            var hour = (now.getHours() + 8 ) % 24 // propose 8 hours from now
-            var minute = now.getMinutes();
-
-            // Set the value of the input fields
-            document.getElementsByName('hour')[0].value = hour;
-            document.getElementsByName('minute')[0].value = minute;
-        </script>
--->
-
         {% if success %}
         <p class="success-message">Alarm set successfully!</p>
         {% endif %}
@@ -248,6 +222,21 @@
         {% if error %}
         <p class="error-message">{{ error }}</p>
         {% endif %}
+        
+        <div class="separator"></div>
+
+
+        <div class="slider-container">
+            <div class="single-slider-container">
+                <label for="volume">Volume:</label>
+                <input type="range" class="slider" id="volume" min="0" max="100" step="0.1" value="50">
+            </div>
+            
+            <div class="single-slider-container">
+                <label for="balance">Balance:</label>
+                <input type="range" class="slider" id="balance" name="balance" min="-1" max="1" step="0.01" value="0">
+            </div>
+        </div>
     </div>
 
     <script>
