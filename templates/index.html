@@ -16,14 +16,6 @@
             margin: 5px;
         }
 
-        p {
-            line-height: 20px;
-            height: 2em;
-            display: table-cell;
-            vertical-align: middle;
-            padding: 10px;
-        }
-
         .container {
             text-align: center;
             max-width: 600px;
@@ -34,8 +26,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        .current {
-            align: center;
+        .current-alarm-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
         .change {
@@ -176,6 +172,7 @@
         .slider::-moz-range-thumb:active {
             background-color: #f8e833; /* Color when thumb is active */
         }
+
     </style>
 
 </head>
@@ -183,18 +180,16 @@
 <body>
     <div class="container">
         <h2>Alarm Clock</h2>
-        <span class="current">
-            <p>
-                <span class="toggle-switch">
-                    <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif
-                        %}>
-                    <label for="alarm-active"></label>
-                </span>
-            <p>
-                Currently: {{alarm_time.strftime('%H:%M')}}
-            </p>
-            </p>
-        </span>
+        <div class="current-alarm-info">
+            <h1>
+                {{alarm_time.strftime('%H:%M')}}
+            </h1>
+            <span class="toggle-switch">
+                <input type="checkbox" id="alarm-active" name="alarm-active" {% if alarm_active %}checked{% endif %}>
+                <label for="alarm-active"></label>
+            </span>
+
+        </div>
 
         <form class="change" method="POST" action="/set_alarm">
             <input type="number" name="hour" min="0" max="23" value="{{  alarm_time.strftime('%H')  }}" placeholder="Hour">
