@@ -62,6 +62,35 @@ nano config.ini
 - Set repeat on to be able to switch back-and-forth between stations: `mpc repeat true`
 - Links that could help if you get stuck: [1](https://www.rohberg.ch/de/blog/radio-streaming-with-a-raspberry-pi), [2](https://www.lesbonscomptes.com/pages/raspmpd.html)
 
+## Audio Issues
+If you have issues with audio (on Raspi Zero W in particular), consider doing:
+
+```
+sudo vim /etc/asound.conf -> 
+defaults.pcm.card 1
+defaults.ctl.card 1
+```
+
+```
+sudo vim /usr/share/alsa/alsa.conf ->
+defaults.pcm.card 1
+defaults.ctl.card 1
+```
+
+(possibly just one of those is enough)
+
+- maybe edit `/etc/mpd.conf` like this:
+```sh
+    audio_output {
+      type "alsa"
+      name "My ALSA Device"
+      hw:1,0
+    }
+```
+
+
+
+
 ## Systemd service
 
 The server is managed via a systemd service. Here's a quick cheatsheet:
