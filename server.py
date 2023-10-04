@@ -342,11 +342,17 @@ def set_volume(volume, balance=-1):
     left = min(max(left, 0), 100)
     right = min(max(right, 0), 100)
 
-    # set volumes
-    command = f"amixer sset 'Master' {left}%,{right}%"
-    os.system(command)
-    app.logger.info(f"Volume set {volume}, {balance} =>({left}% left, {right}% right)")
+        # set volumes
+    if 0:
+        command = f"amixer sset 'Master' {left}%,{right}%"
+    else:
+        mpc_volume = round(volume*100)
+        command = f"mpc volume {mpc_volume}"
+        app.logger.info(f">>>>>>>>>>> using mpc volume {mpc_volume}")
 
+    os.system(command)
+
+    app.logger.info(f"Volume set {volume}, {balance} =>({left}% left, {right}% right)")
 
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}, retries_attempted=0):
     app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
