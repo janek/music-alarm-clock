@@ -55,7 +55,13 @@ audio_output {
 }
 ```
 
-- on a Raspi Zero W, using a USB card, you might have to do the following:
+### Sound on Raspberry Zero W with USB sound card
+
+1. `aplay /usr/share/sounds/alsa/Front_Center.wav -D sysdefault:CARD=1` (a.k.a `snd1` if aliases are installed) should work out of the box - if it doesn't, debug that first before going to next steps
+
+
+
+2. Update configurations:
 
 ```
 sudo vim /etc/asound.conf -> add these lines
@@ -68,6 +74,8 @@ sudo vim /usr/share/alsa/alsa.conf -> change 0s to 1s to get the same lines as a
 defaults.pcm.card 1
 defaults.ctl.card 1
 ```
+
+3. Restart
 
 ## Optional tips and settings
 
