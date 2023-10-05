@@ -12,7 +12,7 @@ all:
 
 
 dependencies:
-	sudo apt install curl virtualenv espeak mpc mpd
+	sudo apt install curl virtualenv espeak mpc mpd mpg123 neovim
 	virtualenv -p /usr/bin/python3 virtualenv
 	./virtualenv/bin/pip install --upgrade -r requirements.txt
 	echo "Reboot is recommended now"
