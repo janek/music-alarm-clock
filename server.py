@@ -212,6 +212,29 @@ def spotiplay():
     response = play_random(spotify_uri="spotify:playlist:" + playlist_id)
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
+@app.route("/random_message")
+def random_message():
+    try:
+        radiostop()
+        # Randomly select a file
+        directory_path = "/home/pi/Developer/voice-messages"
+        files = os.listdir(directory_path)
+        random_file = random.choice(files)
+        random_file_path = os.path.join(directory_path, random_file)
+        app.logger.info(f'Selected random file: {random_file}')
+
+        # Run mpg123 and wait for it to complete
+        # subprocess.run(["mpg123", random_file_path])
+        subprocess.run("mpg123 {} && mpc play".format(random_file_path), shell=True)
+
+        app.logger.info("mpg123 has finished playing.")
+        # time.sleep(0.3)
+        # response = requests.get('http://localhost:3141/radioplay')
+        return "Played random voice message"
+    except Exception as e:
+        app.logger.error(f'An error occurred: {e}')
+        return "An error occurred"
+
 #Todo use spotipy to set spotify playback to shuffle 
 def play_random(spotify_uri=None): 
 
