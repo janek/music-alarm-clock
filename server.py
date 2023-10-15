@@ -345,7 +345,7 @@ def set_volume(volume, balance=0):
     # g_volume  is a float from 0 -1
     g_volume = max(min(float(volume), 1), 0)
 
-    if balance is not -1:
+    if balance != -1:
         # balance is a float ranging from -1 (full left) to 1 (full right)
         # clamp balance to range [-1, 1] to avoid errors
         g_balance = max(min(float(balance), 1), -1)
