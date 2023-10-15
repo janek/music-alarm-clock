@@ -68,7 +68,27 @@ sudo vim /usr/share/alsa/alsa.conf -> change 0s to 1s to get the same lines as a
 defaults.pcm.card 1
 defaults.ctl.card 1
 ```
+- on a Raspi Zero W, using a PCM5102a I2S audio module add pinheaders, follow this:
+https://gist.github.com/autr/921c1d1b8e5f4ee15e39123b3f774052
 
+## When USING "mpc volume XX":
+```
+sudo nano /etc/mpd.conf
+```
+add --> mixer_type "software"
+
+```
+audio_output {
+        type            "alsa"
+        name            "My ALSA Device"
+##      device          "hw:0,0"        # optional
+        mixer_type      "software"      # optional
+##      mixer_type      "hardware"      # optional
+##      mixer_device    "default"       # optional
+##      mixer_control   "PCM"           # optional
+##      mixer_index     "0"             # optional
+}
+```
 ## Optional tips and settings
 
 - `ssh-copy-id -i ~/.ssh/id_ed25519.pub pi@zero-one` to copy your ssh public key and remove the need for a password. Replace `ed25519` by whatever you're using (you can see what's in the folder) and `pi@zero-one` with your username and hostname/ip

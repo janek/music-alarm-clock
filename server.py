@@ -221,6 +221,15 @@ def spotiplay():
     response = play_random(spotify_uri="spotify:playlist:" + playlist_id)
     return "Play request sent to Spotify. Response: " + str(response.status_code) +  " " + response.text
 
+@app.route("/random_message")
+def random_message():
+    try:
+        subprocess.Popen(["sh", "play_voice_message.sh"])
+        return "Played random voice message"
+    except Exception as e:
+        app.logger.error(f'An error occurred: {e}')
+        return "An error occurred"
+
 #Todo use spotipy to set spotify playback to shuffle 
 def play_random(spotify_uri=None): 
 
@@ -353,11 +362,16 @@ def set_volume(volume, balance=0):
     left = min(max(left, 0), 100)
     right = min(max(right, 0), 100)
 
-    # set volumes
-    command = f"amixer sset 'Master' {left}%,{right}%"
+        # set volumes
+    if 0:
+        command = f"amixer sset 'Master' {left}%,{right}%"
+    else:
+        mpc_volume = round(volume*100)
+        command = f"mpc volume {mpc_volume}"
+        app.logger.info(f">>>>>>>>>>> using mpc volume {mpc_volume}")
+
     os.system(command)
     app.logger.info(f"Volume set {g_volume}, {g_balance} =>({left}% left, {right}% right)")
-
 
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}, retries_attempted=0):
     app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
