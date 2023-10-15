@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# if this is not run, mpc add does not work properly
+mpc update
+
 # Insert track before, use mpc prev, when it finishes and jumps back del the old one
 current_track_index=$(mpc -f "%position%" current | tr -d '\n')
 random_file=$(ls ~/Developer/voice-messages/ | shuf -n 1)
