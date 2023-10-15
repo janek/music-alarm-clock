@@ -334,7 +334,7 @@ def set_volume(volume, balance=-1):
     # volume  is a float from 0 -1
     volume = max(min(float(volume), 1), 0)
 
-    if balance is not -1:
+    if balance != -1:
         # balance is a float ranging from -1 (full left) to 1 (full right)
         # clamp balance to range [-1, 1] to avoid errors
         g_balance = max(min(float(balance), 1), -1)
@@ -352,7 +352,7 @@ def set_volume(volume, balance=-1):
     right = min(max(right, 0), 100)
 
         # set volumes
-    if 0:
+    if 1:
         command = f"amixer sset 'Master' {left}%,{right}%"
     else:
         mpc_volume = round(volume*100)
