@@ -63,6 +63,7 @@ ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
 fade_minutes = 2
 
+g_volume = 0.5
 g_balance = 0
 
 # set up initial alarm time
@@ -70,7 +71,15 @@ alarm_time = datetime.time(hour=8, minute=0)
 alarm_active = False
 
 def render():
-    return render_template('index.html', alarm_time=alarm_time, alarm_active=alarm_active)
+    global g_volume
+    global g_balance
+
+    return render_template(
+        'index.html', 
+        alarm_time=alarm_time, 
+        alarm_active=alarm_active,
+        slider_volume=g_volume,
+        slider_balance=g_balance)
 
 # define routes
 @app.route('/')
@@ -189,7 +198,7 @@ def homeassistant_triggerWebhook(webhook_name):
 def spotialarm():
    app.logger.info('Starting spotify alarm') 
    global fade_minutes
-   start_fade_volume_in(goal_volume=70, fade_duration_mins=fade_minutes)
+   start_fade_volume_in(goal_volume=0.7, fade_duration_mins=fade_minutes)
 
    try:
         spotiplay()
@@ -262,16 +271,16 @@ def playpause():
     else:
         play()
 
-def start_fade_volume_in(goal_volume=70, fade_duration_mins=1.0):
+def start_fade_volume_in(goal_volume=0.7, fade_duration_mins=1.0):
     # start fade_volume_in in a new thread
     fade_thread = threading.Thread(target=fade_volume_in, args=(goal_volume, fade_duration_mins))
     fade_thread.start()
 
-def fade_volume_in(goal_volume=70, fade_duration_mins=1):
+def fade_volume_in(goal_volume=0.7, fade_duration_mins=1):
     set_volume(0)
     fade_duration_secs = fade_duration_mins * 60
     sleep_time = fade_duration_secs / goal_volume
-    for i in range(0, goal_volume):
+    for i in range(0, goal_volume*100):
         set_volume(i/100)
         time.sleep(sleep_time)
 
@@ -295,21 +304,21 @@ def fade_volume_out(fade_duration_mins=1):
         app.logger.info("Failed to fade_volume_out")
         # print trace with logger
         app.logger.exception("message")
-        
 
     radiostop()
     spotipause()
 
 @app.route("/volume")
 def volume():
-    new_volume = float(request.args.get('volume')) / 100.0
+    new_volume = float(request.args.get('volume'))
 
     b = request.args.get('balance')
     if b is not None:
         set_volume(new_volume, float(b))
     else:
         set_volume(new_volume)
-        
+    
+    return render()
     return "Volume set to " + str(new_volume) if new_volume is not None else "Volume not set"
 
 def get_volume():
@@ -320,10 +329,12 @@ def get_volume():
     else:
         return None
 
-def set_volume(volume, balance=-1):
+def set_volume(volume, balance=0):
+    global g_volume
     global g_balance
-    # volume  is a float from 0 -1
-    volume = max(min(float(volume), 1), 0)
+
+    # g_volume  is a float from 0 -1
+    g_volume = max(min(float(volume), 1), 0)
 
     if balance is not -1:
         # balance is a float ranging from -1 (full left) to 1 (full right)
@@ -345,7 +356,7 @@ def set_volume(volume, balance=-1):
     # set volumes
     command = f"amixer sset 'Master' {left}%,{right}%"
     os.system(command)
-    app.logger.info(f"Volume set {volume}, {balance} =>({left}% left, {right}% right)")
+    app.logger.info(f"Volume set {g_volume}, {g_balance} =>({left}% left, {right}% right)")
 
 
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}, retries_attempted=0):
