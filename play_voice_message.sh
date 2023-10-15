@@ -5,9 +5,9 @@ mpc update
 
 # Insert track before, use mpc prev, when it finishes and jumps back del the old one
 current_track_index=$(mpc -f "%position%" current | tr -d '\n')
-random_file=$(ls ~/Developer/voice-messages/ | shuf -n 1)
+random_file=$(ls ~/Developer/spotify-alarm-clock/voice-messages/ | shuf -n 1)
 
-mpc insert ~/Developer/voice-messages/$random_file
+mpc insert ~/Developer/spotify-alarm-clock/voice-messages/$random_file
 
 if [ "$current_track_index" -ne "0" ]; then
   mpc move $(($current_track_index + 1)) $current_track_index
