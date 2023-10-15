@@ -352,7 +352,7 @@ def set_volume(volume, balance=-1):
     right = min(max(right, 0), 100)
 
         # set volumes
-    if 0:
+    if 1:
         command = f"amixer sset 'Master' {left}%,{right}%"
     else:
         mpc_volume = round(volume*100)
