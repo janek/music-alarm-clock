@@ -223,6 +223,9 @@ def spotiplay():
 
 @app.route("/random_message")
 def random_message():
+
+    return "not used"
+
     try:
         subprocess.Popen(["sh", "play_voice_message.sh"])
         return "Played random voice message"
