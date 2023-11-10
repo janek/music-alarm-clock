@@ -142,9 +142,9 @@ def request_spotify_authorization(code=None):
         return error
     elif "access_token" in response_data:
         access_token = response_data["access_token"]
-        file = open("access_token.txt", "w")
-        file.write(access_token)
-        file.close()
+        os.environ[
+            "SPOTIFY_ACCESS_TOKEN"
+        ] = access_token  # Store access token in environment variable
         refresh_token_received = "refresh_token" in response_data
         if refresh_token_received:
             refresh_token = response_data["refresh_token"]
@@ -391,10 +391,9 @@ def handle_and_return_possible_error_message_in_api_response(response):
             say("Error: " + error_message)
         return error_message
 
-def access_token_from_file():
-    file = open("access_token.txt","r")
-    access_token = file.read()
-    file.close()
+
+def access_token_from_environment():
+    access_token = os.getenv("SPOTIFY_ACCESS_TOKEN")
     return access_token
 
 def say(something):
