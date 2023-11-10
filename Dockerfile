@@ -21,10 +21,14 @@ RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
 
 # Create a non-root user (optional but recommended for security)
 RUN useradd -m pi
-USER pi
 
 # Copy the rest of your project
 COPY . .
+
+# Change ownership of all files to 'pi' user
+RUN chown -R pi:pi /usr/src/app
+
+USER pi
 
 # Set the default command for the container using the virtual environment's Python
 CMD [ "venv/bin/python", "./server.py" ]
