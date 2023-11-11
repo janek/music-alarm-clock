@@ -351,7 +351,7 @@ def set_volume(volume, balance=-1):
 def spotify_request(endpoint, http_method="PUT",  data=None, force_device=False, token=None, url_params={}, retries_attempted=0):
     app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
     if token is None:
-        token = access_token_from_file()
+        token = access_token_from_environment()
     if force_device:
         url_params["device_id"] = SPOTIFY_DEVICE_ID
     url = SPOTIFY_PLAYER_URL + "/" + endpoint
