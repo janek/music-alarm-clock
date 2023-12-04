@@ -322,7 +322,7 @@ def fade_volume_out(fade_duration_mins=1):
 
 @app.route("/volume")
 def volume():
-    new_volume = float(request.args.get('volume'))
+    new_volume = float(request.args.get('volume')) / 100
 
     b = request.args.get('balance')
     if b is not None:

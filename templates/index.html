@@ -275,7 +275,7 @@
             const volume = volumeSlider.value;
             const balance = balanceSlider.value;
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/volume?volume=${volume}&balance=${balance}`);
+            xhr.open("GET", `/volume?volume=${volume*100}&balance=${balance}`);
             xhr.send();
         }
         
