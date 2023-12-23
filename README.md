@@ -7,7 +7,7 @@ Warning: WIP: the README is lacking and the setup is not smooth
 ## Setting up the Raspberry Pi
 
 - Install the OS in headless mode following [Tom's Hardware Guide](https://www.tomshardware.com/reviews/raspberry-pi-headless-setup-how-to,6028.html)
-- Make sure the timezone of the raspberry pi is the same as your timezone. Locale should be set in the SD flashing process, but consider double-checking.
+- Make sure the timezone of the raspberry pi is the same as your timezone. Locale should be set in the SD flashing process, but consider double-checking. Locale can be very annoying, [this article](https://www.howtoraspberry.com/2020/04/fix-locale-problems-on-raspberry-pi/) can help.
 - Consider installing [rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver).
   - This enables the Raspi to work as music receiver over Spotify Connect, AirPlay and Bluetooth. The script will let you choose which.
   - You can use this repository (in internet radio mode) without any of those. If you want to use Spotify as an alarm clock, you'll need Spotify Connect
