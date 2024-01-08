@@ -24,10 +24,8 @@ RUN useradd -m pi
 
 # Copy the rest of your project
 COPY . .
-
-# Change ownership of all files to 'pi' user
-RUN chown -R pi:pi /usr/src/app
-
+USER root
+RUN chown -R pi:pi /usr/src/app/
 USER pi
 
 # Set the default command for the container using the virtual environment's Python
