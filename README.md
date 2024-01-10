@@ -103,9 +103,10 @@ You can then connect to it using localhost from machine you're working on, or th
 ## Spotify authorization
 
 - Create an app on Spotify
-- Get the local IP of your raspberry pi, for example `192.168.0.38`
-- Make sure `http://192.168.0.38:3141/authorize_spotify` is included in "Redirect URIs" on your [Spotify dashboard](https://developer.spotify.com/dashboard/) (substituting 192.168.0.38 for your raspberry pi's IP)
-- Go to `http://192.168.0.38:3141/login` (substituting 192.168.0.38 for your raspberry pi's IP)
+- Get the hostname of your raspberry pi, for example `polywaker-music` or `nice-pi`
+- Make sure `http://<your_hostname>:3141/authorize_spotify` is included in "Redirect URIs" on your [Spotify dashboard](https://developer.spotify.com/dashboard/)
+- Go to `http:/<your_hostname>:3141/login` (substituting 192.168.0.38 for your raspberry pi's IP)
+- You should see a message that says the access token and refresh tokens have been saved
 - Edit `/etc/raspotify/conf` and add the following:
   LIBRESPOT_USERNAME="<your_spotify_username"
   LIBRESPOT_PASSWORD="<your_spotify_password"
