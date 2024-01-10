@@ -1,4 +1,5 @@
 import time
+import socket
 import threading
 from flask import Flask, request, redirect, render_template
 import datetime
@@ -40,20 +41,15 @@ playlist_id = "7jirtU9sm2aEe5DYK8n6Id"  # Dave/Easy Wakeup
 # playlist_id = '5crU6AclXGahkiVpvIcbZQ' # Janek/raspi-alarm-clock
 
 
-def get_local_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+def get_local_hostname():
     try:
-        # doesn't have to be reachable
-        s.connect(("10.255.255.255", 1))
-        IP = s.getsockname()[0]
+        hostname = socket.gethostname()
     except:
-        IP = "127.0.0.1"
-    finally:
-        s.close()
-    return IP
+        hostname = "localhost"
+    return hostname
 
 
-HOSTNAME = get_local_ip()
+HOSTNAME = get_local_hostname()
 PORT = 3141
 THIS_SERVER_ADDRESS = "http://" + HOSTNAME + ":" + str(PORT)
 SPOTIFY_REDIRECT_URI = THIS_SERVER_ADDRESS + "/authorize_spotify"
