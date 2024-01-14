@@ -24,6 +24,11 @@ install:
 	sudo systemctl daemon-reload
 	sudo systemctl enable spotify-alarm-clock
 
+install-keyboard:
+	sudo cp keyboard-controls.service /etc/systemd/system
+	sudo systemctl daemon-reload
+	sudo systemctl enable keyboard-controls
+  
 aliases:
 	cat bash_aliases >> ~/.bash_aliases
 	source ~/.bashrc
