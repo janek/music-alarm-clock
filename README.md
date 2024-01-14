@@ -109,8 +109,8 @@ You can then connect to it using localhost from machine you're working on, or th
 - Go to `http:/<your_hostname>:3141/login`
 - You should see a message that says the access token and refresh tokens have been saved
 - Edit `/etc/raspotify/conf` and add the following:
-  LIBRESPOT_USERNAME="<your_spotify_username"
-  LIBRESPOT_PASSWORD="<your_spotify_password"
+  LIBRESPOT_USERNAME="<your_spotify_username>"
+  LIBRESPOT_PASSWORD="<your_spotify_password>"
   - (without this the device will "disappear" from the /devices/ endpoint of the Spotify API and will not be reachable for the alarm)
 
 ## Configuring radio stations
