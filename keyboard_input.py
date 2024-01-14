@@ -1,3 +1,5 @@
+import os
+print("Starting keyboard listener with $DISPLAY", os.environ.get('DISPLAY', 'not found in os.environ'))
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
 from playlists import playlists
@@ -14,6 +16,7 @@ def on_press(key):
 
 	try:
 		#TODO: how can this form be made clearer? a dictionary with code and action? remember vk vs char
+		print(key)
 		if key.vk == 76:
 			print("got enter")
 			playpause()
@@ -25,7 +28,8 @@ def on_press(key):
 		elif key.char == "+":
 			print("voldown")
 		elif key.char == "0":
-			print("0 caught")
+			playpause()
+			print("playpause")
 		elif key.char == ".":
 			pause()
 			print("pause")
