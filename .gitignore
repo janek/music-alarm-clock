@@ -5,3 +5,4 @@ virtualenv
 logs/
 .vscode
 access_token.txt
+.cache
