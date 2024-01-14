@@ -102,8 +102,6 @@ You can then connect to it using localhost from machine you're working on, or th
 
 ## Spotify authorization
 
-- XXX: there is a bug with persisting the access token between restarts
-- XXX: uncommitted changes for hostname are on `nice-pi`
 - Create an app on Spotify
 - Get the hostname of your raspberry pi, for example `polywaker-music` or `nice-pi`
 - Make sure `http://<your_hostname>:3141/authorize_spotify` is included in "Redirect URIs" on your [Spotify dashboard](https://developer.spotify.com/dashboard/)
