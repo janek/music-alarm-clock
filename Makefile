@@ -40,7 +40,7 @@ dev:
 	/home/pi/Developer/spotify-alarm-clock/virtualenv/bin/python /home/pi/Developer/spotify-alarm-clock/server.py
 
 keyboard-dev:
-	sudo -E ./virtualenv/bin/python keyboard_control.py
+	sudo -E ./virtualenv/bin/python keyboard_input.py
 
 test:
 	./virtualenv/bin/pytest
