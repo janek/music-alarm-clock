@@ -147,9 +147,9 @@ def request_spotify_authorization(code=None):
         return error
     elif "access_token" in response_data:
         access_token = response_data["access_token"]
-        os.environ[
-            "SPOTIFY_ACCESS_TOKEN"
-        ] = access_token  # Store access token in environment variable
+        file = open("access_token.txt", "w")
+        file.write(access_token)
+        file.close()
         refresh_token_received = "refresh_token" in response_data
         if refresh_token_received:
             refresh_token = response_data["refresh_token"]
@@ -418,7 +418,7 @@ def spotify_request(
 ):
     app.logger.info("Request to endpoint '/" + endpoint + "' attempted")
     if token is None:
-        token = os.environ.get("SPOTIFY_ACCESS_TOKEN")
+        token = access_token_from_file()
     if force_device:
         url_params["device_id"] = SPOTIFY_DEVICE_ID
     url = SPOTIFY_PLAYER_URL + "/" + endpoint
@@ -474,11 +474,10 @@ def handle_and_return_possible_error_message_in_api_response(response):
             say("Error: " + error_message)
         return error_message
 
-
-def access_token_from_environment():
-    access_token = os.environ.get("SPOTIFY_ACCESS_TOKEN")
+def access_token_from_file():
+    with open("access_token.txt", "r") as f:
+        access_token = f.read()
     return access_token
-
 
 def say(something):
     run(["espeak", something], stdout=subprocess.DEVNULL)
