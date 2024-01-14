@@ -3,7 +3,7 @@ print("Starting keyboard listener with $DISPLAY", os.environ.get('DISPLAY', 'not
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
 from playlists import playlists
-from server import play, pause, playpause, set_volume
+from server import play, pause, playpause, set_volume, radiotoggle
 
 numlock_modifier_on = False
 
@@ -43,11 +43,14 @@ def on_press(key):
 		# Happens when key.vk or key.char is empty, i.e. for all `Key` objects
 		corresponding_number = get_number_for_numlocked_key(key)
 		if corresponding_number:
-			set_volume(corresponding_number)
+                    vol = corresponding_number/10
+                    print("Setting volume to " + str(vol))
+                    set_volume(vol)
 		if key == Key.backspace:
-			print("Got backspace")
+                    print("Got backspace")
 		if key == Key.enter:
-			print("Got enter")
+                    radiotoggle()
+                    print("Got enter")
 
 def get_number_for_numlocked_key(key):
 	key_map = {
@@ -56,7 +59,7 @@ def get_number_for_numlocked_key(key):
             Key.down: 2,
             Key.page_down: 3,
             Key.left: 4,
-            "<65437>": 5,  # Assuming this is a specific key identification
+            "<65437>": 5,  # This doesn't work at the moment
             Key.right: 6,
             Key.home: 7,
             Key.up: 8,
