@@ -1,0 +1,12 @@
+[Unit] 
+Description= Keyboard Controls
+
+[Service] 
+Type= simple 
+ExecStart= /home/pi/Developer/spotify-alarm-clock/virtualenv/bin/python /home/pi/Developer/spotify-alarm-clock/keyboard-input.py
+WorkingDirectory= /home/pi/Developer/spotify-alarm-clock
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
