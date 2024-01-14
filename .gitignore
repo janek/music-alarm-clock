@@ -4,3 +4,4 @@ virtualenv
 .nova/
 logs/
 .vscode
+access_token.txt
