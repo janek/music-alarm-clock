@@ -37,8 +37,8 @@ SPOTIFY_PLAYER_URL = SPOTIFY_API_URL + "/me/player"
 SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
 READ_ERRORS_OUT_LOUD = cfg.get_read_errors_out_loud()
 
-playlist_id = "7jirtU9sm2aEe5DYK8n6Id"  # Dave/Easy Wakeup
-# playlist_id = '5crU6AclXGahkiVpvIcbZQ' # Janek/raspi-alarm-clock
+# playlist_id = "7jirtU9sm2aEe5DYK8n6Id"  # Dave/Easy Wakeup
+playlist_id = '5crU6AclXGahkiVpvIcbZQ' # Janek/raspi-alarm-clock
 
 
 def get_local_hostname():
