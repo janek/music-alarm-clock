@@ -98,7 +98,7 @@ To build and run:
 
 You can then connect to it using localhost from machine you're working on, or the IP of that machine when connecting from somewhere else. Verify that it's working with:
 
-`http://localhost:3141/` or `http://192.168.0.38:3141/`
+`http://localhost:3141/` or e.g. `http://192.168.0.38:3141/`
 
 ## Spotify authorization
 
