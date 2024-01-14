@@ -3,7 +3,7 @@ print("Starting keyboard listener with $DISPLAY", os.environ.get('DISPLAY', 'not
 from pynput.keyboard import Key, KeyCode, Listener
 import requests
 from playlists import playlists
-from server import play, pause, playpause, set_volume, radiotoggle
+from server import play, pause, playpause, set_volume, radiotoggle, radionext
 
 numlock_modifier_on = False
 
@@ -46,11 +46,12 @@ def on_press(key):
                     vol = corresponding_number/10
                     print("Setting volume to " + str(vol))
                     set_volume(vol)
-		if key == Key.backspace:
-                    print("Got backspace")
 		if key == Key.enter:
                     radiotoggle()
                     print("Got enter")
+		if key == Key.backspace:
+                    print("Got backspace")
+                    radionext()
 
 def get_number_for_numlocked_key(key):
 	key_map = {
