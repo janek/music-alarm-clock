@@ -46,6 +46,7 @@ dev:
 
 numpad: 
 	nohup make keyboard-dev > /dev/null 2>&1 &
+
 keyboard-dev:
 	sudo -E ./virtualenv/bin/python keyboard_input.py
 
