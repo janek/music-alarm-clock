@@ -24,6 +24,11 @@ install:
 	sudo systemctl daemon-reload
 	sudo systemctl enable spotify-alarm-clock
 
+install-keyboard:
+	sudo cp keyboard-controls.service /etc/systemd/system
+	sudo systemctl daemon-reload
+	sudo systemctl enable keyboard-controls
+  
 aliases:
 	cat bash_aliases >> ~/.bash_aliases
 	source ~/.bashrc
@@ -40,7 +45,7 @@ dev:
 	/home/pi/Developer/spotify-alarm-clock/virtualenv/bin/python /home/pi/Developer/spotify-alarm-clock/server.py
 
 keyboard-dev:
-	sudo -E ./virtualenv/bin/python keyboard_control.py
+	sudo -E ./virtualenv/bin/python keyboard_input.py
 
 test:
 	./virtualenv/bin/pytest
