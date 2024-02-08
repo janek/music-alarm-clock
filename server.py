@@ -406,6 +406,17 @@ def set_volume(volume, balance=-1):
     os.system(command)
     app.logger.info(f"Volume set {volume}, {balance} =>({left}% left, {right}% right)")
 
+def adjust_volume_by(step_percentage=10, increase=True):
+    operation = "+" if increase else "-"
+    command = f"amixer sset 'Master' {step_percentage}%{operation}"
+    os.system(command)
+    app.logger.info(f"Volume {'increased' if increase else 'decreased'} by {step_percentage}%")
+
+def increase_volume(step_percentage=10):
+    adjust_volume_by(step_percentage, increase=True)
+
+def decrease_volume(step_percentage=10):
+    adjust_volume_by(step_percentage, increase=False)
 
 def spotify_request(
     endpoint,
