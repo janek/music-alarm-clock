@@ -504,6 +504,11 @@ def stop(fade_duration_mins=0):
         spotipause()
         return "Playback stopped"
 
+@app.route("/radiotoggle")
+def radiotoggle():
+    app.logger.info("Toggling radio")
+    run(["mpc", "toggle"])
+    return "Radio toggled"
 
 @app.route("/radioplay")
 def radioplay():
