@@ -38,7 +38,7 @@ SPOTIFY_PLAYABLE_URI = cfg.get_spotify_playable_uri()
 READ_ERRORS_OUT_LOUD = cfg.get_read_errors_out_loud()
 
 # playlist_id = "7jirtU9sm2aEe5DYK8n6Id"  # Dave/Easy Wakeup
-playlist_id = '5crU6AclXGahkiVpvIcbZQ' # Janek/raspi-alarm-clock
+playlist_id = "5crU6AclXGahkiVpvIcbZQ"  # Janek/raspi-alarm-clock
 
 
 def get_local_hostname():
@@ -372,6 +372,18 @@ def volume():
     )
 
 
+@app.route("/volumeup")
+def volumeup():
+    increase_volume()
+    return "Volume increased"
+
+
+@app.route("/volumedown")
+def volumedown():
+    decrease_volume()
+    return "Volume decreased"
+
+
 def get_volume():
     output = check_output(["amixer", "get", "Master"])
     match = re.search(r"\[(\d+)%\]", output.decode())
@@ -408,17 +420,23 @@ def set_volume(volume, balance=-1):
     os.system(command)
     app.logger.info(f"Volume set {volume}, {balance} =>({left}% left, {right}% right)")
 
+
 def adjust_volume_by(step_percentage=10, increase=True):
     operation = "+" if increase else "-"
     command = f"amixer sset 'Master' {step_percentage}%{operation}"
     os.system(command)
-    app.logger.info(f"Volume {'increased' if increase else 'decreased'} by {step_percentage}%")
+    app.logger.info(
+        f"Volume {'increased' if increase else 'decreased'} by {step_percentage}%"
+    )
+
 
 def increase_volume(step_percentage=10):
     adjust_volume_by(step_percentage, increase=True)
 
+
 def decrease_volume(step_percentage=10):
     adjust_volume_by(step_percentage, increase=False)
+
 
 def spotify_request(
     endpoint,
@@ -487,10 +505,12 @@ def handle_and_return_possible_error_message_in_api_response(response):
             say("Error: " + error_message)
         return error_message
 
+
 def access_token_from_file():
     with open("access_token.txt", "r") as f:
         access_token = f.read()
     return access_token
+
 
 def say(something):
     run(["espeak", something], stdout=subprocess.DEVNULL)
@@ -506,11 +526,13 @@ def stop(fade_duration_mins=0):
         spotipause()
         return "Playback stopped"
 
+
 @app.route("/radiotoggle")
 def radiotoggle():
     app.logger.info("Toggling radio")
     run(["mpc", "toggle"])
     return "Radio toggled"
+
 
 @app.route("/radioplay")
 def radioplay():
