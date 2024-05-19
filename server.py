@@ -59,7 +59,7 @@ SYSTEM_USER = os.environ.get("USER")
 SPOTIFY_DEVICE_ID = cfg.get_spotify_device_id()
 ALARM_ANNOTATION_TAG = "SPOTIFY ALARM"  # Identifies our lines in crontab
 currently_playing = False
-fade_minutes = 2
+fade_minutes = 15
 
 g_balance = 0
 
@@ -211,7 +211,7 @@ def homeassistant_triggerWebhook(webhook_name):
 def spotialarm():
     app.logger.info("Starting spotify alarm")
     global fade_minutes
-    start_fade_volume_in(goal_volume=70, fade_duration_mins=fade_minutes)
+    start_fade_volume_in(goal_volume=30, fade_duration_mins=fade_minutes)
 
     try:
         spotiplay()
@@ -356,6 +356,8 @@ def fade_volume_out(fade_duration_mins=1):
 @app.route("/volume")
 def volume():
     new_volume = float(request.args.get("volume")) / 100.0
+    if new_volume == 0:
+        radioplay()
 
     b = request.args.get("balance")
     if b is not None:
@@ -521,6 +523,9 @@ def radioplay():
 def radioalarm():
     app.logger.info("Starting radio alarm")
     start_fade_volume_in(fade_duration_mins=fade_minutes)
+    # Sleep added to guarantee no "flash" of loud music that could happen
+    # if play is triggered before volume is set to 0
+    time.sleep(3)
     radioplay()
     homeassistant_triggerWebhook("wakeup_alarm_triggered")
     return "Radio alarm started"
