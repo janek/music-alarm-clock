@@ -55,6 +55,35 @@ audio_output {
 }
 ```
 
+### Sound on Raspberry Pi 3B+
+
+If the shairplay works but no sound is coming out, that can be related to:
+
+```
+shairport-sync[990]: Failed to create secure directory (/home/shairport-sync/.config/pulse): No such file or directory
+```
+--> this indicates that shairport does not find the right audio device and tries something with pulse audio..
+https://github.com/mikebrady/shairport-sync/blob/development/ADVANCED%20TOPICS/PulseAudioAndPipeWire.md
+
+--> still works when run not as service so a solution is to change the service file:
+
+```
+sudo nano /lib/systemd/system/shairport-sync.service
+```
+
+change EXEC to:
+
+```
+ExecStart=/usr/local/bin/shairport-sync --log-to-syslog -o alsa -- -d hw:Headphones
+```
+
+then 
+
+```
+systemctl daemon-reload 
+sudo systemctl restart shairport-sync
+```
+
 ### Sound on Raspberry Zero W with USB sound card
 
 1. `aplay /usr/share/sounds/alsa/Front_Center.wav -D sysdefault:CARD=1` (a.k.a `snd1` if aliases are installed) should work out of the box - if it doesn't, debug that first before going to next steps
