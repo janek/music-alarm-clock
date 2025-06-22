@@ -34,8 +34,11 @@ aliases:
 	source ~/.bashrc
 
 radio-stations:
-	mpc add https://stream-relay-geo.ntslive.net/stream
-	mpc add https://stream-relay-geo.ntslive.net/stream2
+	mpc add https://stream-relay-geo.ntslive.net/stream # https://nts.live/
+	mpc add https://stream-relay-geo.ntslive.net/stream2 # https://nts.live/
+	# mpc add https://streaming.radio.co/s3699c5e49/listen # https://refugeworldwide.com/, might have tech issues / not work
+	# mpc add https://stream.radiokampus.fm/kampus # https://radiokampus.fm/
+	# mpc add https://stream.radioluz.pl:8443/luz_hifi.mp3 # https://radioluz.pl/, might have tech issues
 	mpc repeat on
 
 restart:
