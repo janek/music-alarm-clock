@@ -24,6 +24,9 @@ install:
 	sudo systemctl daemon-reload
 	sudo systemctl enable spotify-alarm-clock
 
+install-other-music-services:
+	wget https://raw.githubusercontent.com/nicokaiser/rpi-audio-receiver/main/install.sh; bash install.sh
+
 install-keyboard:
 	sudo cp keyboard-controls.service /etc/systemd/system
 	sudo systemctl daemon-reload
